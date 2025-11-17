@@ -44,7 +44,68 @@ public class FenetrePrincipale extends JFrame  {
 
 
         setVisible(true);
+
+
+        // MENU PRINCIPAL
+        // BARRE DE MENU
+
+        //MENU PRINCIPAL "Fichiers"
+        JMenu menuOutils = new JMenu("Outils");
+
+        // OPTIONS DU MENU
+        JMenuItem Editeur = new JMenuItem("Editeur");
+        JMenuItem Calculatrice = new JMenuItem("Calculatrice");
+        JMenuItem Information = new JMenuItem("Information");
+
+        // Ajouter les options au menu
+        menuOutils.add( Editeur);
+        menuOutils.add(Calculatrice);
+        menuOutils.add(Information);;
+        setJMenuBar(barre);
+
+        // Ajouter le menu à la barre
+        barre.add(menuOutils);
+
+        // Placer la barre en haut de la fenêtre
+        setJMenuBar(barre);
+
+        // Actions quand on clique sur les options
+
+
+        setVisible(true);
+
+
+
+        //MENU PRINCIPAL "Fichiers"
+        JMenu menuOptions = new JMenu("Options");
+
+        // OPTIONS DU MENU
+        JMenuItem Police = new JMenuItem("Police");
+        JMenuItem Configuration = new JMenuItem("Configuration");
+        JMenuItem Sauver = new JMenuItem("Sauver ");
+
+        // Ajouter les options au menu
+        menuOptions.add( Police);
+        menuOptions.add(Configuration);
+        menuOptions.add(Sauver);
+        setJMenuBar(barre);
+
+        // Ajouter le menu à la barre
+        barre.add(menuOptions);
+
+        // Placer la barre en haut de la fenêtre
+        setJMenuBar(barre);
+
+        // Actions quand on clique sur les options
+
+
+        setVisible(true);
+
+
+
     }
+
+
 
 
 }
