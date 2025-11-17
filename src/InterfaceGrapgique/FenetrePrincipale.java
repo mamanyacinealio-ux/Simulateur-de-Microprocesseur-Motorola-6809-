@@ -15,7 +15,7 @@ public class FenetrePrincipale extends JFrame  {
         //MENU PRINCIPAL "Fichiers"
         JMenu menuFichiers = new JMenu("Fichiers");
 
-        // OPTIONS DU MENU
+        // OPTIONS DU MENU fichiers
         JMenuItem Nouveau = new JMenuItem("Nouveau");
         JMenuItem Ouvrir = new JMenuItem("Ouvrir");
         JMenuItem Enregister = new JMenuItem("Enregister");
@@ -39,6 +39,85 @@ public class FenetrePrincipale extends JFrame  {
 
         // Placer la barre en haut de la fenêtre
         setJMenuBar(barre);
+
+
+
+
+
+        //MENU PRINCIPAL Simulateur
+        JMenu menuSimulateur = new JMenu("Simulateur");
+
+        // OPTIONS DU MENU Simulateur
+        JMenuItem Pas_a_pas = new JMenuItem("Pas à pas");
+        JMenuItem Executer = new JMenuItem("Exécuter");
+        JMenuItem Defaire = new JMenuItem("Défaire");
+        JMenuItem Reset = new JMenuItem("Reset");
+
+
+        // Ajouter les options au menu
+        menuSimulateur.add( Pas_a_pas);
+        menuSimulateur.add(Executer);
+        menuSimulateur.add(Defaire);
+        menuSimulateur.add(Reset);
+
+        // Ajouter le menu à la barre
+        barre.add(menuSimulateur);
+
+
+
+
+        //MENU PRINCIPAL fenetre
+        JMenu menuFenetre = new JMenu("Fenetre");
+
+        // Placer la barre en haut de la fenêtre
+        setJMenuBar(barre);
+
+        // OPTIONS DU MENU fenetre
+        JMenuItem Programme = new JMenuItem("Programme");
+        JMenuItem RAM = new JMenuItem("RAM");
+        JMenuItem ROM = new JMenuItem("ROM");
+        JMenuItem PIA = new JMenuItem("PIA");
+        JMenuItem Arranger = new JMenuItem("Arranger ");
+
+
+        // Ajouter les options au menu
+        menuFenetre.add(Programme);
+        menuFenetre.add(RAM);
+        menuFenetre.add(ROM);
+        menuFenetre.add(PIA);
+        menuFenetre.add(Arranger);
+        // Ajouter le menu à la barre
+        barre.add(menuFenetre);
+        // Placer la barre en haut de la fenêtre
+        setJMenuBar(barre);
+
+
+
+
+        //MENU PRINCIPAL aide
+        JMenu menuAide = new JMenu("Aide");
+
+        // Placer la barre en haut de la fenêtre
+        setJMenuBar(barre);
+
+        // OPTIONS DU MENU aide
+        JMenuItem A_propos = new JMenuItem("A propos");
+        JMenuItem Index = new JMenuItem("Index");
+        JMenuItem Jeu_instructions = new JMenuItem("Jeu instructions");
+
+
+
+        // Ajouter les options au menu
+        menuAide.add(A_propos);
+        menuAide.add(Index);
+        menuAide.add(Jeu_instructions);
+
+        // Ajouter le menu à la barre
+        barre.add(menuAide);
+        // Placer la barre en haut de la fenêtre
+        setJMenuBar(barre);
+
+
 
         // Actions quand on clique sur les options
 
