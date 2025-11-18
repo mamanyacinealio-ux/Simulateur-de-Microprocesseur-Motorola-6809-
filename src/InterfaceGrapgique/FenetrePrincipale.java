@@ -180,25 +180,33 @@ public class FenetrePrincipale extends JFrame  {
 
 
         ImageIcon iconNouveau = new ImageIcon(
-                new ImageIcon("C:/Image/new.png")
+                new ImageIcon("C:/Image/new2.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-
-
         JButton Nouveau1 = new JButton(iconNouveau);
 
         ImageIcon iconnew = new ImageIcon(
-                new ImageIcon("C:/Image/ouvrir.png.png")
+                new ImageIcon("C:/Image/ouvrir2.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-
-
         JButton ouvrir1 = new JButton(iconnew);
+
+
+        ImageIcon iconsauver = new ImageIcon(
+                new ImageIcon("C:/Image/sauver.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton sauver = new JButton(iconsauver);
+
+
+
         //Ajout des boutons à la barre
         barre1.add(Nouveau1);
         barre1.add(ouvrir1);
+        barre1.add(sauver);
 
 
 
