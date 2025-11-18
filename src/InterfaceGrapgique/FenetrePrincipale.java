@@ -1,4 +1,12 @@
 package InterfaceGrapgique;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+
+
+import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
 public class FenetrePrincipale extends JFrame  {
@@ -37,11 +45,6 @@ public class FenetrePrincipale extends JFrame  {
         // Ajouter le menu à la barre
         barre.add(menuFichiers);
 
-        // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
-
-
-
 
 
         //MENU PRINCIPAL Simulateur
@@ -60,8 +63,7 @@ public class FenetrePrincipale extends JFrame  {
         menuSimulateur.add(Defaire);
         menuSimulateur.add(Reset);
 
-        // Ajouter le menu à la barre
-        barre.add(menuSimulateur);
+
 
 
 
@@ -91,13 +93,12 @@ public class FenetrePrincipale extends JFrame  {
         // Actions quand on clique sur les options
 
 
-        setVisible(true);
+
 
       //MENU PRINCIPAL fenetre
         JMenu menuFenetre = new JMenu(" Fenêtre");
 
-        // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
+
 
         // OPTIONS DU MENU fenetre
         JMenuItem Programme = new JMenuItem("Programme");
@@ -115,8 +116,7 @@ public class FenetrePrincipale extends JFrame  {
         menuFenetre.add(Arranger);
         // Ajouter le menu à la barre
         barre.add(menuFenetre);
-        // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
+
 
         //MENU PRINCIPAL options
         JMenu menuOptions = new JMenu("Options");
@@ -135,8 +135,6 @@ public class FenetrePrincipale extends JFrame  {
         // Ajouter le menu à la barre
         barre.add(menuOptions);
 
-        // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
 
 
 
@@ -160,15 +158,58 @@ public class FenetrePrincipale extends JFrame  {
 
         // Ajouter le menu à la barre
         barre.add(menuAide);
-        // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
 
-        // Actions quand on clique sur les options
+
+
+
+
+
+
+
+    // Création de la barre d'outils
+        JToolBar barre1 = new JToolBar();
+
+
+
+        // Ajouter la barre à la fenêtre
+        add(barre1, BorderLayout.NORTH);
+
+        // Cretation des boutons de la deuxième barre
+        JTextArea zoneTexte = new JTextArea();
+        add(new JScrollPane(zoneTexte), BorderLayout.CENTER);
+
+
+        ImageIcon iconNouveau = new ImageIcon(
+                new ImageIcon("C:/Image/new.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+
+
+        JButton Nouveau1 = new JButton(iconNouveau);
+
+        ImageIcon iconnew = new ImageIcon(
+                new ImageIcon("C:/Image/ouvrir.png.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+
+
+        JButton ouvrir1 = new JButton(iconnew);
+        //Ajout des boutons à la barre
+        barre1.add(Nouveau1);
+        barre1.add(ouvrir1);
+
+
+
+
+
+
+
+
 
 
         setVisible(true);
-
-
 
     }
 
