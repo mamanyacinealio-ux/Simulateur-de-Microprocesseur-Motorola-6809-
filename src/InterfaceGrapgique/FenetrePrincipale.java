@@ -10,6 +10,8 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
 public class FenetrePrincipale extends JFrame  {
+    private int vitesse = 10;
+    private boolean programmeCharge = false;
     public  FenetrePrincipale() {
         //FENETRE PRINCIPALE
         setTitle("MOTO6809");
@@ -180,25 +182,142 @@ public class FenetrePrincipale extends JFrame  {
 
 
         ImageIcon iconNouveau = new ImageIcon(
-                new ImageIcon("C:/Image/new.png")
+                new ImageIcon("C:/Image/new2.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-
-
         JButton Nouveau1 = new JButton(iconNouveau);
 
         ImageIcon iconnew = new ImageIcon(
-                new ImageIcon("C:/Image/ouvrir.png.png")
+                new ImageIcon("C:/Image/ouvrir2.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton ouvrir1 = new JButton(iconnew);
+
+
+        ImageIcon iconsauver = new ImageIcon(
+                new ImageIcon("C:/Image/sauver.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton sauver = new JButton(iconsauver);
+
+
+        ImageIcon iconediteur = new ImageIcon(
+                new ImageIcon("C:/Image/edition.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton editeur = new JButton(iconediteur);
+
+        ImageIcon iconpas = new ImageIcon(
+                new ImageIcon("C:/Image/pas.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton pas = new JButton(iconpas);
+
+        ImageIcon iconreset = new ImageIcon(
+                new ImageIcon("C:/Image/reset.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton reset = new JButton(iconreset);
+
+        ImageIcon iconirq = new ImageIcon(
+                new ImageIcon("C:/Image/irq.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton irq = new JButton(iconirq);
+
+        ImageIcon iconfirq = new ImageIcon(
+                new ImageIcon("C:/Image/firq.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton firq = new JButton(iconfirq);
+
+        ImageIcon iconnmi =new ImageIcon(
+                new ImageIcon("C:/Image/nmi.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton nmi= new JButton(iconnmi);
+
+        ImageIcon iconarranger = new ImageIcon(
+                new ImageIcon("C:/Image/arranger.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton arranger = new JButton(iconarranger);
+
+        ImageIcon iconassembleur = new ImageIcon(
+                new ImageIcon("C:/Image/assembleur.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton assembleur = new JButton(iconassembleur);
+
+        ImageIcon iconimprimer = new ImageIcon(
+                new ImageIcon("C:/Image/imprimer.png")
+                        .getImage()
+                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        );
+        JButton imprimer = new JButton(iconimprimer);
+
+
+        // Attribut de la classe pour pouvoir le modifier depuis les boutons
+
+
+      // Label pour afficher la vitesse
+        JLabel labelVitesse = new JLabel("Vitesse : " + vitesse);
+        ImageIcon iconvitesse = new ImageIcon(
+                new ImageIcon("C:/Image/vitesse.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
 
 
-        JButton ouvrir1 = new JButton(iconnew);
+        JButton boutonAugmenter = new JButton("▲");
+        boutonAugmenter.addActionListener(e -> {
+            vitesse += 10;
+            labelVitesse.setText("Vitesse : " + vitesse);
+        });
+
+
+        JButton boutonDiminuer = new JButton("▼");
+        boutonDiminuer.addActionListener(e -> {
+            if(vitesse > 10) {
+                vitesse -= 10;
+                labelVitesse.setText("Vitesse : " + vitesse);
+            }
+        });
+
+
+
         //Ajout des boutons à la barre
         barre1.add(Nouveau1);
         barre1.add(ouvrir1);
+        barre1.add(sauver);
+        barre1.add(editeur);
+        barre1.add(pas);
+        barre1.add(irq);
+        barre1.add(firq);
+        barre1.add(nmi);
+        barre1.add(arranger);
+        barre1.add(assembleur);
+        barre1.add(imprimer);
+        barre1.add(boutonDiminuer);
+        barre1.add(labelVitesse);
+        barre1.add(boutonAugmenter);
+
+
+
+
+
+
 
 
 
