@@ -69,6 +69,6 @@ public class RegistreCPU {
             System.out.printf("U: %04X, S: %04X\n", U, S);
             System.out.printf("PC: %04X, CC: %02X, DP: %02X\n", PC, CC, DP);
         }
-    }
+
 
 }
