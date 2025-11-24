@@ -1,13 +1,11 @@
-package InterfaceGrapgique;
+package InterfaceGraphique ;
 import java.awt.*;
 import javax.swing.*;
 import CPU.RegistreCPU;
 public class FenetreCPU extends JFrame {
     private RegistreCPU registreCPU = new RegistreCPU();
-    private JLabel texteVariable;
     private JTextField champTexte1;
     private JTextField champTexte2;
-    private JTextField champTexte;
     private JTextField champA;
     private JTextField champB;
     private JTextField champPC;
@@ -23,7 +21,9 @@ public class FenetreCPU extends JFrame {
 
 
 
-    public FenetreCPU() {
+    public FenetreCPU(RegistreCPU registreCPU) {
+        //Liaison avec le registre
+        this.registreCPU = registreCPU;
         //FENETRE PRINCIPALE
         setTitle("Architecture interne du 6809");
         setBounds(10, 140, 300, 500);
@@ -41,13 +41,13 @@ public class FenetreCPU extends JFrame {
 
 
 
-        champTexte = new JTextField("FC00");
-        champTexte.setFont(new Font("Arial", Font.BOLD, 16));
-        champTexte.setForeground(Color.BLACK);
-        champTexte.setBackground(Color.WHITE);
-        champTexte.setOpaque(true);
-        champTexte.setBounds(90, 10, 100, 30);
-        add(champTexte);
+        champPC = new JTextField("FC00");
+        champPC.setFont(new Font("Arial", Font.BOLD, 16));
+        champPC.setForeground(Color.BLACK);
+        champPC.setBackground(Color.WHITE);
+        champPC.setOpaque(true);
+        champPC.setBounds(90, 10, 100, 30);
+        add(champPC);
 
 
         // champ 2
@@ -162,7 +162,7 @@ public class FenetreCPU extends JFrame {
         champX.setForeground(Color.BLACK);
         champX.setBackground(Color.WHITE);
         champX.setOpaque(true);
-        champX.setBounds(30, 400, 100, 30); // position décalée vers le bas
+        champX.setBounds(30, 400, 100, 30);
         add(champX);
 
         //  champ Y
@@ -181,7 +181,11 @@ public class FenetreCPU extends JFrame {
         UALShape ual = new UALShape();
         add(ual);
 
+        //liaison avec tous les registres
+        bindRegisters();
 
+
+        //visibilité de la fenetre
         setVisible(true);
     }
 
@@ -219,13 +223,10 @@ public class FenetreCPU extends JFrame {
             }
         }
 
-    public FenetreCPU(RegistreCPU registreCPU) {
-        this.registreCPU = registreCPU;
-        bindRegisters();
-    }
+
 
     private void bindRegisters() {
-        // Écoute tous les changements de registres
+        // bind pour assurer tous les changements de registres
         registreCPU.addPropertyChangeListener(evt -> {
             switch (evt.getPropertyName()) {
                 case "PC": champPC.setText(String.format("%04X", registreCPU.getPC())); break;
@@ -241,7 +242,7 @@ public class FenetreCPU extends JFrame {
             }
         });
 
-        // Initialiser les champs avec les valeurs actuelles
+        // actualiser les champs
         champPC.setText(String.format("%04X", registreCPU.getPC()));
         champA.setText(String.format("%02X", registreCPU.getA()));
         champB.setText(String.format("%02X", registreCPU.getB()));

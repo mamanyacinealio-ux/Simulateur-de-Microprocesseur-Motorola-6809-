@@ -1,5 +1,5 @@
 package CPU;
-import InterfaceGrapgique.FenetreCPU;
+import InterfaceGraphique.FenetreCPU;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 public class RegistreCPU {
@@ -7,6 +7,7 @@ public class RegistreCPU {
     //Accumulateurs A et B
     private int A;
     private int B;
+    public int cycles;
 
 
 
@@ -80,6 +81,13 @@ public class RegistreCPU {
     public int getDP() { return DP; }
     public void setDP(int dp) { int old = DP; DP = dp & 0xFF; pcs.firePropertyChange("DP", old, DP); }
 
+
+
+    public void reset() {
+        PC = 0x0000;
+        A = B = X = Y = U = S = DP = CC = 0;
+        cycles = 0;
+    }
 
 }
 
