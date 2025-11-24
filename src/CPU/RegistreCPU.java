@@ -20,9 +20,9 @@ public class RegistreCPU {
     private int DP;
 
     public RegistreCPU() {
-        A = B = 1056;
-        X = Y = 566;
-        U = S = 67;
+        A = B = 23;
+        X = Y = 556;
+        U = S = 455;
         PC = 57;
         CC = 67;
         DP = 687;
