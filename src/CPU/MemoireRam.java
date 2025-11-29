@@ -22,7 +22,7 @@ public class MemoireRam {
 
         public void write(int address, byte value) {
             if (address >= ROM_START)
-                return; // ROM protegida
+                return;
 
             memoire[address & 0xFFFF] = value;
         }
