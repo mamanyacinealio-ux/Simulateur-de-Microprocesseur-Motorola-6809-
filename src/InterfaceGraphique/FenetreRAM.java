@@ -1,14 +1,10 @@
-package CPU;
+package InterfaceGraphique;
+
+import CPU.MemoireRam;
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-
-
-
-
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.text.ParseException;
 
 // Fenetre RAM
 public class FenetreRAM extends JFrame {

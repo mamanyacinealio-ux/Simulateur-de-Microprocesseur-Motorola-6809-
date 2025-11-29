@@ -1,10 +1,12 @@
-package CPU;
+package InterfaceGraphique;
 // FenetreROM.java
 
+import CPU.MemoireRam;
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import javax.swing.table.AbstractTableModel;
+import java.awt.*;
+
 public class FenetreROM extends JFrame{
 
 
