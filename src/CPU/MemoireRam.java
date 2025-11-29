@@ -1,13 +1,22 @@
 package CPU;
 
 public class MemoireRam {
-    private byte[] memoire=new byte[65536];
+    private byte[] memoire;
 
 
 
     public static final int ROM_START = 0xE000;
 
-        public byte read(int address) {
+    public MemoireRam(int taile) {
+        this.memoire = new byte[taile];
+
+    }
+    public int getTaile(){
+        return memoire.length;
+    }
+
+
+    public byte read(int address) {
             return memoire[address & 0xFFFF];
         }
 
