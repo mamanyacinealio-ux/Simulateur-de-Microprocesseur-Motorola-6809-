@@ -1,5 +1,5 @@
 package Memoire;
 
 public class RAM {
-    int v;
+    int vl;
 }
