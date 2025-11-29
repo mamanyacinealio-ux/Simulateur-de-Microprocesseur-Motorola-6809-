@@ -1,6 +1,5 @@
 package InterfaceGraphique;
-import CPU.MemoireRam;
-
+import Memoire.MemoireRam;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,7 +21,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     public FenetrePrincipale() {
         //FENETRE PRINCIPALE
 
-        this.m = new MemoireRam(65539);
+        this.m = new MemoireRam();
         setTitle("MOTO6809");
         setBounds(0, 0, 1920, 140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -4,6 +4,7 @@ import java.awt.*;
 public class FenetreEdition extends JFrame {
      private String  code;
 
+
     public String getCode() {
         return code;
     }

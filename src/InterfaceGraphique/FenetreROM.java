@@ -1,7 +1,7 @@
 package InterfaceGraphique;
 // FenetreROM.java
 
-import CPU.MemoireRam;
+import Memoire.MemoireRam;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -23,7 +23,7 @@ public class FenetreROM extends JFrame{
             this.memoire = m;
 
             // configuration de la fenetre
-            setTitle("Visualização da Memória ROM");
+            setTitle("ROM");
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
@@ -55,7 +55,7 @@ public class FenetreROM extends JFrame{
             private final String[] nomesColunas = {"", ""};
 
             // A ROM tem 8KB (32768 - 65535) = 8192 bytes
-            private final int Tail_ROM = 0x2000; // 8192 bytes
+            private final int Tail_ROM = 0x400; // 8192 bytes
             private final int Adress_Initial = MemoireRam.ROM_START; // Ex: 0xE000
 
             public ROMTableModel(MemoireRam memoria) {

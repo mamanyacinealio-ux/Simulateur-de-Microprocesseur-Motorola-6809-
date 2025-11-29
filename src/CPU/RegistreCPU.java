@@ -25,7 +25,7 @@ public class RegistreCPU {
         U = S = 455;
         PC = 57;
         CC = 67;
-        DP = 687;
+        DP = 5555;
     }
 
 

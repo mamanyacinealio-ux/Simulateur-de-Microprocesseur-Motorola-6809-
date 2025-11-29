@@ -36,15 +36,19 @@ public class Syntaxe {
 
 
 
-    FenetreEdition fenetre;
-    String code = fenetre.getCode();
+    private FenetreEdition fenetre;
+    public Syntaxe(FenetreEdition fenetre) {
+        this.fenetre = fenetre; 
+        String code = fenetre.getCode();
+    }
     public static boolean VerifierCode(String code) {
         boolean OK = true;
         String[] lignes = code.split("\n");
         for (int i = 0; i < lignes.length; i++) {
             boolean ok = VerifierLigne(lignes[i]);
-            if (!ok) System.out.println("Ligne " + (i+1) + " invalide: " + lignes[i]);
-            return false;
+            if (!ok){
+                System.out.println("Ligne " + (i+1) + " invalide: " + lignes[i]);
+            OK=false;}
         }
 
         //Vérification de la dernière ligne (END)
@@ -54,7 +58,7 @@ public class Syntaxe {
         }
         if (ENDIndex < 0 || !lignes[ENDIndex].trim().equalsIgnoreCase("END")) {
             System.out.println("Erreur: le code doit se terminer par 'END'");
-            return false;
+            OK=false;
         }
 
         return OK;
@@ -66,6 +70,10 @@ public class Syntaxe {
         } else {
             return null;
         }
+    }
+
+    public String toString() {
+        return "Syntaxe : " + VerifierCode(fenetre.getCode());
     }
 
 }
