@@ -51,6 +51,7 @@ public class FenetreROM extends JFrame{
         private static class ROMTableModel extends AbstractTableModel {
 
             private final MemoireRam memoriaFonte;
+
             private final String[] nomesColunas = {"", ""};
 
             // A ROM tem 8KB (32768 - 65535) = 8192 bytes
