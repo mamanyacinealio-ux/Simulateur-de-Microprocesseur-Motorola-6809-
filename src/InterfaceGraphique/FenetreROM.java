@@ -1,7 +1,7 @@
 package InterfaceGraphique;
 // FenetreROM.java
 
-import CPU.MemoireRam;
+import Memoire.MemoireRam;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -23,7 +23,7 @@ public class FenetreROM extends JFrame{
             this.memoire = m;
 
             // configuration de la fenetre
-            setTitle("Visualização da Memória ROM");
+            setTitle("ROM");
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 

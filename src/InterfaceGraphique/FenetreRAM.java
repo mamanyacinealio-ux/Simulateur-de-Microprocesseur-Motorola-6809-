@@ -1,10 +1,8 @@
 package InterfaceGraphique;
-
-import CPU.MemoireRam;
-
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.awt.*;
+import  Memoire.MemoireRam;
 
 // Fenetre RAM
 public class FenetreRAM extends JFrame {
@@ -19,7 +17,7 @@ public class FenetreRAM extends JFrame {
         this.memoire = m;
 
         // --- Configuração Básica da Janela ---
-        setTitle("Visualização da Memória RAM");
+        setTitle("RAM");
         // Quando fechar esta janela, apenas ela se fecha (não o programa)
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 

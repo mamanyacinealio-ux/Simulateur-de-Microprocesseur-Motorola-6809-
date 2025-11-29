@@ -2,7 +2,8 @@ package InterfaceGraphique;
 import javax.swing.*;
 import java.awt.*;
 public class FenetreEdition extends JFrame {
-     private String  code;
+     private String  code="jkk"
+             ;
 
     public String getCode() {
         return code;

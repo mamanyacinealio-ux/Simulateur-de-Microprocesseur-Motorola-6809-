@@ -1,6 +1,5 @@
 package InterfaceGraphique;
-import CPU.MemoireRam;
-
+import Memoire.MemoireRam;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

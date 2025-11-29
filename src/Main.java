@@ -1,4 +1,5 @@
-import CPU.MemoireRam;
+import Instruction.Syntaxe;
+import Memoire.MemoireRam;
 import InterfaceGraphique.FenetreCPU;
 import InterfaceGraphique.FenetreEdition;
 import CPU.RegistreCPU;
@@ -9,7 +10,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(new Runnable() {
+        /*SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 FenetrePrincipale F=new FenetrePrincipale();
@@ -17,7 +18,11 @@ public class Main {
                 RegistreCPU reg = new RegistreCPU();
                 new FenetreCPU(reg);
             F.setVisible(true);}
-            });
+
+            });*/
+        FenetreEdition f=new FenetreEdition();
+        Syntaxe syntaxe = new Syntaxe(f);
+        System.out.print(syntaxe);
 
 
 
