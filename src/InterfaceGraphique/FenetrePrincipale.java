@@ -1,64 +1,76 @@
 package InterfaceGraphique;
-import CPU.FenetreRAM;
-import CPU.FenetreROM;
-import CPU.MemoireRam;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JFrame;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JTabbedPane;
 
+
+import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
-
-public class FenetrePrincipale extends JFrame implements ActionListener {
+import java.io.File;
+public class FenetrePrincipale extends JFrame  {
     private int vitesse = 10;
     private boolean programmeCharge = false;
-    private MemoireRam m;
-
-
-    private JMenuItem ramItem;
-    private JMenuItem romItem;
-    // OPTIONS DU MENU fenetre
-
-    public FenetrePrincipale(MemoireRam m) {
-        this.m=m;
-
+    public  FenetrePrincipale() {
         //FENETRE PRINCIPALE
         setTitle("MOTO6809");
-        setBounds(0, 0, 1920, 140);
+        setBounds(0,0,1920,140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-
         // MENU PRINCIPAL
-        // BARRE DE MENU
+        // BARRE Du MENU  PRINCIPAL
         JMenuBar barre = new JMenuBar();
         //MENU PRINCIPAL "Fichiers"
         JMenu menuFichiers = new JMenu("Fichiers");
 
         // OPTIONS DU MENU fichiers
         JMenuItem Nouveau = new JMenuItem("Nouveau");
+        Nouveau.setToolTipText("Nouveau fichier");
+        Nouveau.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FenetreEdition fenetreEdition = new FenetreEdition();
+                fenetreEdition.setVisible(true);
+            }
+        });
         JMenuItem Ouvrir = new JMenuItem("Ouvrir");
+        Ouvrir.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(FenetrePrincipale.this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File fichierSelectionne = fileChooser.getSelectedFile();
+                JOptionPane.showMessageDialog(FenetrePrincipale.this,
+                        "Fichier sélectionné : " + fichierSelectionne.getAbsolutePath());
+            }
+        });
         JMenuItem Enregister = new JMenuItem("Enregister");
         JMenuItem Enregister_sous = new JMenuItem("Enregister sous");
         JMenuItem Assembler = new JMenuItem("Assembler");
         JMenuItem Imprimer = new JMenuItem("Imprimer");
-        JMenuItem Quiter = new JMenuItem("Quiter");
+        JMenuItem Quitter= new JMenuItem("Quiter");
+        Quitter.addActionListener(e -> {
+
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(Quitter);
+            topFrame.dispose();
+        });
 
         // Ajouter les options au menu
-        menuFichiers.add(Nouveau);
+        menuFichiers.add( Nouveau);
         menuFichiers.add(Ouvrir);
         menuFichiers.add(Enregister);
         menuFichiers.add(Enregister_sous);
         menuFichiers.add(Assembler);
         menuFichiers.add(Imprimer);
-        menuFichiers.add(Quiter);
+        menuFichiers.add(Quitter);
         setJMenuBar(barre);
 
         // Ajouter le menu à la barre
         barre.add(menuFichiers);
+
 
 
         //MENU PRINCIPAL Simulateur
@@ -72,13 +84,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
 
         // Ajouter les options au menu
-        menuSimulateur.add(Pas_a_pas);
+        menuSimulateur.add( Pas_a_pas);
         menuSimulateur.add(Executer);
         menuSimulateur.add(Defaire);
         menuSimulateur.add(Reset);
-        setJMenuBar(barre);
 
-        barre.add(menuSimulateur);
+
+
 
 
         // MENU PRINCIPAL
@@ -93,44 +105,43 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         JMenuItem Information = new JMenuItem("Information");
 
         // Ajouter les options au menu
-        menuOutils.add(Editeur);
+        menuOutils.add( Editeur);
         menuOutils.add(Calculatrice);
-        menuOutils.add(Information);
-        ;
+        menuOutils.add(Information);;
         setJMenuBar(barre);
 
         // Ajouter le menu à la barre
         barre.add(menuOutils);
 
         // Placer la barre en haut de la fenêtre
-
+        setJMenuBar(barre);
 
         // Actions quand on clique sur les options
 
+
+
+
+      //MENU PRINCIPAL fenetre
         JMenu menuFenetre = new JMenu(" Fenêtre");
 
 
-        //MENU PRINCIPAL fenetre
 
+        // OPTIONS DU MENU fenetre
         JMenuItem Programme = new JMenuItem("Programme");
-        ramItem = new JMenuItem("RAM");
-        romItem = new JMenuItem("ROM");
+        JMenuItem RAM = new JMenuItem("RAM");
+        JMenuItem ROM = new JMenuItem("ROM");
         JMenuItem PIA = new JMenuItem("PIA");
         JMenuItem Arranger = new JMenuItem("Arranger ");
-
-        ramItem.addActionListener(this);
-        romItem.addActionListener(this);
 
 
         // Ajouter les options au menu
         menuFenetre.add(Programme);
-        menuFenetre.add(ramItem);
-        menuFenetre.add(romItem);
+        menuFenetre.add(RAM);
+        menuFenetre.add(ROM);
         menuFenetre.add(PIA);
         menuFenetre.add(Arranger);
-        setJMenuBar(barre);
-        barre.add(menuFenetre);
         // Ajouter le menu à la barre
+        barre.add(menuFenetre);
 
 
         //MENU PRINCIPAL options
@@ -142,7 +153,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         JMenuItem Sauver = new JMenuItem("Sauver ");
 
         // Ajouter les options au menu
-        menuOptions.add(Police);
+        menuOptions.add( Police);
         menuOptions.add(Configuration);
         menuOptions.add(Sauver);
         setJMenuBar(barre);
@@ -151,11 +162,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         barre.add(menuOptions);
 
 
+
+
         //MENU PRINCIPAL aide
         JMenu menuAide = new JMenu("Aide");
 
         // Placer la barre en haut de la fenêtre
-
+        setJMenuBar(barre);
 
         // OPTIONS DU MENU aide
         JMenuItem A_propos = new JMenuItem("A propos");
@@ -163,17 +176,25 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         JMenuItem Jeu_instructions = new JMenuItem("Jeu instructions");
 
 
+
         // Ajouter les options au menu
         menuAide.add(A_propos);
         menuAide.add(Index);
         menuAide.add(Jeu_instructions);
-        setJMenuBar(barre);
+
         // Ajouter le menu à la barre
         barre.add(menuAide);
 
 
-        // Création de la barre d'outils
+
+
+
+
+
+
+    // Création de la barre d'outils
         JToolBar barre1 = new JToolBar();
+
 
 
         // Ajouter la barre à la fenêtre
@@ -190,6 +211,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton Nouveau1 = new JButton(iconNouveau);
+        Nouveau1.setToolTipText("Nouveau fichier");
+        Nouveau1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FenetreEdition fenetreEdition = new FenetreEdition();
+                fenetreEdition.setVisible(true);
+            }
+        });
 
         ImageIcon iconnew = new ImageIcon(
                 new ImageIcon("C:/Image/ouvrir2.png")
@@ -197,6 +226,19 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton ouvrir1 = new JButton(iconnew);
+        ouvrir1.setToolTipText("Ouvrir fichier");
+
+        ouvrir1.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(FenetrePrincipale.this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File fichierSelectionne = fileChooser.getSelectedFile();
+                JOptionPane.showMessageDialog(FenetrePrincipale.this,
+                        "Fichier sélectionné : " + fichierSelectionne.getAbsolutePath());
+            }
+        });
+
 
 
         ImageIcon iconsauver = new ImageIcon(
@@ -205,6 +247,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton sauver = new JButton(iconsauver);
+        sauver.setToolTipText("Sauvergarder");
 
 
         ImageIcon iconediteur = new ImageIcon(
@@ -213,6 +256,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton editeur = new JButton(iconediteur);
+       editeur.setToolTipText("Édititer");
+        editeur.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FenetreEdition fenetreEdition = new FenetreEdition();
+                fenetreEdition.setVisible(true);
+            }
+        });
 
         ImageIcon iconpas = new ImageIcon(
                 new ImageIcon("C:/Image/pas.png")
@@ -220,6 +271,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton pas = new JButton(iconpas);
+        pas.setToolTipText("Pas à pas");
+
 
         ImageIcon iconreset = new ImageIcon(
                 new ImageIcon("C:/Image/reset.png")
@@ -227,27 +280,32 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton reset = new JButton(iconreset);
+        reset.setToolTipText("Reset");
 
         ImageIcon iconirq = new ImageIcon(
                 new ImageIcon("C:/Image/irq.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-        JButton irq = new JButton(iconirq);
+        JButton irq = new JButton("IRQ");
+        irq.setToolTipText("IRQ");
 
         ImageIcon iconfirq = new ImageIcon(
                 new ImageIcon("C:/Image/firq.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-        JButton firq = new JButton(iconfirq);
+        JButton firq = new JButton("FIRQ");
+        firq.setToolTipText("FIRQ");
 
-        ImageIcon iconnmi = new ImageIcon(
+
+        ImageIcon iconnmi =new ImageIcon(
                 new ImageIcon("C:/Image/nmi.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-        JButton nmi = new JButton(iconnmi);
+        JButton nmi= new JButton("NMI");
+        nmi.setToolTipText("NMI");
 
         ImageIcon iconarranger = new ImageIcon(
                 new ImageIcon("C:/Image/arranger.png")
@@ -255,6 +313,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton arranger = new JButton(iconarranger);
+        arranger.setToolTipText("Arranger");
+
 
         ImageIcon iconassembleur = new ImageIcon(
                 new ImageIcon("C:/Image/assembleur.png")
@@ -262,6 +322,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton assembleur = new JButton(iconassembleur);
+       assembleur.setToolTipText("Assembler");
+
 
         ImageIcon iconimprimer = new ImageIcon(
                 new ImageIcon("C:/Image/imprimer.png")
@@ -269,12 +331,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton imprimer = new JButton(iconimprimer);
+        imprimer.setToolTipText("Imprimer");
+
 
 
         // Attribut de la classe pour pouvoir le modifier depuis les boutons
 
 
-        // Label pour afficher la vitesse
+      // Label pour afficher la vitesse
         JLabel labelVitesse = new JLabel("Vitesse : " + vitesse);
         ImageIcon iconvitesse = new ImageIcon(
                 new ImageIcon("C:/Image/vitesse.png")
@@ -292,11 +356,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         JButton boutonDiminuer = new JButton("▼");
         boutonDiminuer.addActionListener(e -> {
-            if (vitesse > 10) {
+            if(vitesse > 10) {
                 vitesse -= 10;
                 labelVitesse.setText("Vitesse : " + vitesse);
             }
         });
+
 
 
         //Ajout des boutons à la barre
@@ -316,27 +381,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         barre1.add(boutonAugmenter);
 
 
+
+
+
+
+
+
         setVisible(true);
 
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == ramItem) {
-            ouvrirFenetreRAM();
 
-        } else {
-            ouvrirFenetreROM();
-        }
-    }
 
-    private void ouvrirFenetreRAM() {
-        FenetreRAM ram = new FenetreRAM(this.m);
-        ram.setVisible(true);
-    }
-
-    private void ouvrirFenetreROM() {
-        FenetreROM rom = new FenetreROM(this.m);
-        rom.setVisible(true);
-    }
 
 }

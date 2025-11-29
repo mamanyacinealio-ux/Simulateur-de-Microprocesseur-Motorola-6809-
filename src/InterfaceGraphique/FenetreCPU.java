@@ -1,10 +1,29 @@
-package InterfaceGraphique;
+package InterfaceGraphique ;
 import java.awt.*;
 import javax.swing.*;
-
+import CPU.RegistreCPU;
 public class FenetreCPU extends JFrame {
-    private JLabel texteVariable;
-    public FenetreCPU() {
+    private RegistreCPU registreCPU = new RegistreCPU();
+    private JTextField champTexte1;
+    private JTextField champTexte2;
+    private JTextField champA;
+    private JTextField champB;
+    private JTextField champPC;
+    private JTextField champU;
+    private JTextField champS;
+    private JTextField champX;
+    private JTextField champY;
+    private JTextField champDP;
+    private JTextField champflags;
+
+
+
+
+
+
+    public FenetreCPU(RegistreCPU registreCPU) {
+        //Liaison avec le registre
+        this.registreCPU = registreCPU;
         //FENETRE PRINCIPALE
         setTitle("Architecture interne du 6809");
         setBounds(10, 140, 300, 500);
@@ -22,18 +41,17 @@ public class FenetreCPU extends JFrame {
 
 
 
-
-        JTextField champTexte = new JTextField("FC00");
-        champTexte.setFont(new Font("Arial", Font.BOLD, 16));
-        champTexte.setForeground(Color.BLACK);
-        champTexte.setBackground(Color.WHITE);
-        champTexte.setOpaque(true);
-        champTexte.setBounds(90, 10, 100, 30);
-        add(champTexte);
+        champPC = new JTextField("FC00");
+        champPC.setFont(new Font("Arial", Font.BOLD, 16));
+        champPC.setForeground(Color.BLACK);
+        champPC.setBackground(Color.WHITE);
+        champPC.setOpaque(true);
+        champPC.setBounds(90, 10, 100, 30);
+        add(champPC);
 
 
         // champ 2
-        JTextField champTexte2 = new JTextField("RIEN");
+        champTexte2 = new JTextField("RIEN");
         champTexte2.setFont(new Font("Arial", Font.BOLD, 16));
         champTexte2.setForeground(Color.BLACK);
         champTexte2.setBackground(Color.WHITE);
@@ -48,7 +66,7 @@ public class FenetreCPU extends JFrame {
         S.setBounds(00, 100, 200, 30);
         add(S);
 
-        JTextField champS = new JTextField("S");
+       champS = new JTextField("S");
         champS.setFont(new Font("Arial", Font.BOLD, 16));
         champS.setForeground(Color.BLACK);
         champS.setBackground(Color.WHITE);
@@ -56,13 +74,13 @@ public class FenetreCPU extends JFrame {
         champS.setBounds(30, 100, 100, 30); // position décalée vers le bas
         add(champS);
 
-        //champ B
+        //champ U
         JLabel U = new JLabel("U");
         U.setForeground(Color.BLACK); // couleur du texte
         U.setFont(new Font("Arial", Font.BOLD, 30));
         U.setBounds(140, 100, 200, 30);
         add(U);
-        JTextField champU = new JTextField("U");
+        champU = new JTextField("U");
         champU.setFont(new Font("Arial", Font.BOLD, 16));
         champU.setForeground(Color.BLACK);
         champU.setBackground(Color.WHITE);
@@ -76,7 +94,7 @@ public class FenetreCPU extends JFrame {
         A.setFont(new Font("Arial", Font.BOLD, 30));
         A.setBounds(0, 150, 200, 30);
         add(A);
-        JTextField champA = new JTextField("A");
+        champA = new JTextField("A");
         champA.setFont(new Font("Arial", Font.BOLD, 16));
         champA.setForeground(Color.BLACK);
         champA.setBackground(Color.WHITE);
@@ -91,7 +109,7 @@ public class FenetreCPU extends JFrame {
         B.setFont(new Font("Arial", Font.BOLD, 30));
         B.setBounds(0, 250, 200, 30);
         add(B);
-        JTextField champB = new JTextField("B");
+        champB = new JTextField("B");
         champB.setFont(new Font("Arial", Font.BOLD, 16));
         champB.setForeground(Color.BLACK);
         champB.setBackground(Color.WHITE);
@@ -105,7 +123,7 @@ public class FenetreCPU extends JFrame {
         DP.setFont(new Font("Arial", Font.BOLD, 30));
         DP.setBounds(0, 300, 200, 30);
         add(DP);
-        JTextField champDP = new JTextField("DP");
+        champDP = new JTextField("DP");
         champDP.setFont(new Font("Arial", Font.BOLD, 16));
         champDP.setForeground(Color.BLACK);
         champDP.setBackground(Color.WHITE);
@@ -114,7 +132,7 @@ public class FenetreCPU extends JFrame {
         add(champDP);
 
         //flags
-        JTextField champflags = new JTextField("flags");
+        champflags = new JTextField("flags");
         champflags.setFont(new Font("Arial", Font.BOLD, 16));
         champflags.setForeground(Color.BLACK);
         champflags.setBackground(Color.WHITE);
@@ -139,12 +157,12 @@ public class FenetreCPU extends JFrame {
         X.setBounds(00, 400, 200, 30);
         add(X);
 
-        JTextField champX = new JTextField("X");
+        champX = new JTextField("X");
         champX.setFont(new Font("Arial", Font.BOLD, 16));
         champX.setForeground(Color.BLACK);
         champX.setBackground(Color.WHITE);
         champX.setOpaque(true);
-        champX.setBounds(30, 400, 100, 30); // position décalée vers le bas
+        champX.setBounds(30, 400, 100, 30);
         add(champX);
 
         //  champ Y
@@ -153,7 +171,7 @@ public class FenetreCPU extends JFrame {
         Y.setFont(new Font("Arial", Font.BOLD, 30));
         Y.setBounds(140, 400, 200, 30);
         add(Y);
-        JTextField champY = new JTextField("Y");
+        champY = new JTextField("Y");
         champY.setFont(new Font("Arial", Font.BOLD, 16));
         champY.setForeground(Color.BLACK);
         champY.setBackground(Color.WHITE);
@@ -163,7 +181,11 @@ public class FenetreCPU extends JFrame {
         UALShape ual = new UALShape();
         add(ual);
 
+        //liaison avec tous les registres
+        bindRegisters();
 
+
+        //visibilité de la fenetre
         setVisible(true);
     }
 
@@ -202,6 +224,35 @@ public class FenetreCPU extends JFrame {
         }
 
 
+
+    private void bindRegisters() {
+        // bind pour assurer tous les changements de registres
+        registreCPU.addPropertyChangeListener(evt -> {
+            switch (evt.getPropertyName()) {
+                case "PC": champPC.setText(String.format("%04X", registreCPU.getPC())); break;
+                case "A": champA.setText(String.format("%02X", registreCPU.getA())); break;
+                case "B": champB.setText(String.format("%02X", registreCPU.getB())); break;
+                case "D": champTexte2.setText(String.format("%04X", registreCPU.getD())); break;
+                case "X": champX.setText(String.format("%04X", registreCPU.getX())); break;
+                case "Y": champY.setText(String.format("%04X", registreCPU.getY())); break;
+                case "U": champU.setText(String.format("%04X", registreCPU.getU())); break;
+                case "S": champS.setText(String.format("%04X", registreCPU.getS())); break;
+                case "DP": champDP.setText(String.format("%02X", registreCPU.getDP())); break;
+                case "CC": champflags.setText(String.format("%02X", registreCPU.getCC())); break;
+            }
+        });
+
+        // actualiser les champs
+        champPC.setText(String.format("%04X", registreCPU.getPC()));
+        champA.setText(String.format("%02X", registreCPU.getA()));
+        champB.setText(String.format("%02X", registreCPU.getB()));
+        champX.setText(String.format("%04X", registreCPU.getX()));
+        champY.setText(String.format("%04X", registreCPU.getY()));
+        champU.setText(String.format("%04X", registreCPU.getU()));
+        champS.setText(String.format("%04X", registreCPU.getS()));
+        champDP.setText(String.format("%02X", registreCPU.getDP()));
+        champflags.setText(String.format("%02X", registreCPU.getCC()));
+    }
 
 
 
