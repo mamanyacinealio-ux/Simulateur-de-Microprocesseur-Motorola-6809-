@@ -1,4 +1,4 @@
-package CPU;
+package Memoire;
 
 public class MemoireRam {
     private byte[] memoire;

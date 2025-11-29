@@ -3,6 +3,11 @@ import javax.swing.*;
 import java.awt.*;
 public class FenetreEdition extends JFrame {
      private String  code;
+
+    public String getCode() {
+        return code;
+    }
+
     public FenetreEdition() {
         //CREATION DE LA FENETRE
         setTitle("Édition");

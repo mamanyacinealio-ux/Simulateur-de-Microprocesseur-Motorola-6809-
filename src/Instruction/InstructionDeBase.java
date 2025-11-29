@@ -1,5 +1,6 @@
 package Instruction;
 
-public class CPU6809 {
+public class InstructionDeBase {
+
           
 }
