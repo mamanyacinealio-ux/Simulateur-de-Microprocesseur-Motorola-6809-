@@ -17,6 +17,8 @@ public class RegistreCPU {
         }
 
 
+    private int X;
+
         private int Y;
         private int U;
         private int S;
@@ -24,7 +26,7 @@ public class RegistreCPU {
         private int CC;
         private int DP;
 
-       public Registers() {
+       public RegistreCPU() {
         A = B = 0;
         X = Y = 0;
         U = S = 0;
@@ -71,4 +73,3 @@ public class RegistreCPU {
         }
     }
 
-}

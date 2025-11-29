@@ -1,23 +1,36 @@
-package InterfaceGrapgique;
+package InterfaceGraphique;
+import CPU.FenetreRAM;
+import CPU.FenetreROM;
+import CPU.MemoireRam;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-
-import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
-public class FenetrePrincipale extends JFrame  {
+
+public class FenetrePrincipale extends JFrame implements ActionListener {
     private int vitesse = 10;
     private boolean programmeCharge = false;
-    public  FenetrePrincipale() {
+    private MemoireRam m;
+
+
+    private JMenuItem ramItem;
+    private JMenuItem romItem;
+    // OPTIONS DU MENU fenetre
+
+    public FenetrePrincipale(MemoireRam m) {
+        this.m=m;
+
         //FENETRE PRINCIPALE
         setTitle("MOTO6809");
-        setBounds(0,0,1920,140);
+        setBounds(0, 0, 1920, 140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+
 
         // MENU PRINCIPAL
         // BARRE DE MENU
@@ -32,10 +45,10 @@ public class FenetrePrincipale extends JFrame  {
         JMenuItem Enregister_sous = new JMenuItem("Enregister sous");
         JMenuItem Assembler = new JMenuItem("Assembler");
         JMenuItem Imprimer = new JMenuItem("Imprimer");
-        JMenuItem Quiter= new JMenuItem("Quiter");
+        JMenuItem Quiter = new JMenuItem("Quiter");
 
         // Ajouter les options au menu
-        menuFichiers.add( Nouveau);
+        menuFichiers.add(Nouveau);
         menuFichiers.add(Ouvrir);
         menuFichiers.add(Enregister);
         menuFichiers.add(Enregister_sous);
@@ -46,7 +59,6 @@ public class FenetrePrincipale extends JFrame  {
 
         // Ajouter le menu à la barre
         barre.add(menuFichiers);
-
 
 
         //MENU PRINCIPAL Simulateur
@@ -60,13 +72,13 @@ public class FenetrePrincipale extends JFrame  {
 
 
         // Ajouter les options au menu
-        menuSimulateur.add( Pas_a_pas);
+        menuSimulateur.add(Pas_a_pas);
         menuSimulateur.add(Executer);
         menuSimulateur.add(Defaire);
         menuSimulateur.add(Reset);
+        setJMenuBar(barre);
 
-
-
+        barre.add(menuSimulateur);
 
 
         // MENU PRINCIPAL
@@ -81,43 +93,44 @@ public class FenetrePrincipale extends JFrame  {
         JMenuItem Information = new JMenuItem("Information");
 
         // Ajouter les options au menu
-        menuOutils.add( Editeur);
+        menuOutils.add(Editeur);
         menuOutils.add(Calculatrice);
-        menuOutils.add(Information);;
+        menuOutils.add(Information);
+        ;
         setJMenuBar(barre);
 
         // Ajouter le menu à la barre
         barre.add(menuOutils);
 
         // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
+
 
         // Actions quand on clique sur les options
 
-
-
-
-      //MENU PRINCIPAL fenetre
         JMenu menuFenetre = new JMenu(" Fenêtre");
 
 
+        //MENU PRINCIPAL fenetre
 
-        // OPTIONS DU MENU fenetre
         JMenuItem Programme = new JMenuItem("Programme");
-        JMenuItem RAM = new JMenuItem("RAM");
-        JMenuItem ROM = new JMenuItem("ROM");
+        ramItem = new JMenuItem("RAM");
+        romItem = new JMenuItem("ROM");
         JMenuItem PIA = new JMenuItem("PIA");
         JMenuItem Arranger = new JMenuItem("Arranger ");
+
+        ramItem.addActionListener(this);
+        romItem.addActionListener(this);
 
 
         // Ajouter les options au menu
         menuFenetre.add(Programme);
-        menuFenetre.add(RAM);
-        menuFenetre.add(ROM);
+        menuFenetre.add(ramItem);
+        menuFenetre.add(romItem);
         menuFenetre.add(PIA);
         menuFenetre.add(Arranger);
-        // Ajouter le menu à la barre
+        setJMenuBar(barre);
         barre.add(menuFenetre);
+        // Ajouter le menu à la barre
 
 
         //MENU PRINCIPAL options
@@ -129,7 +142,7 @@ public class FenetrePrincipale extends JFrame  {
         JMenuItem Sauver = new JMenuItem("Sauver ");
 
         // Ajouter les options au menu
-        menuOptions.add( Police);
+        menuOptions.add(Police);
         menuOptions.add(Configuration);
         menuOptions.add(Sauver);
         setJMenuBar(barre);
@@ -138,13 +151,11 @@ public class FenetrePrincipale extends JFrame  {
         barre.add(menuOptions);
 
 
-
-
         //MENU PRINCIPAL aide
         JMenu menuAide = new JMenu("Aide");
 
         // Placer la barre en haut de la fenêtre
-        setJMenuBar(barre);
+
 
         // OPTIONS DU MENU aide
         JMenuItem A_propos = new JMenuItem("A propos");
@@ -152,25 +163,17 @@ public class FenetrePrincipale extends JFrame  {
         JMenuItem Jeu_instructions = new JMenuItem("Jeu instructions");
 
 
-
         // Ajouter les options au menu
         menuAide.add(A_propos);
         menuAide.add(Index);
         menuAide.add(Jeu_instructions);
-
+        setJMenuBar(barre);
         // Ajouter le menu à la barre
         barre.add(menuAide);
 
 
-
-
-
-
-
-
-    // Création de la barre d'outils
+        // Création de la barre d'outils
         JToolBar barre1 = new JToolBar();
-
 
 
         // Ajouter la barre à la fenêtre
@@ -239,12 +242,12 @@ public class FenetrePrincipale extends JFrame  {
         );
         JButton firq = new JButton(iconfirq);
 
-        ImageIcon iconnmi =new ImageIcon(
+        ImageIcon iconnmi = new ImageIcon(
                 new ImageIcon("C:/Image/nmi.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-        JButton nmi= new JButton(iconnmi);
+        JButton nmi = new JButton(iconnmi);
 
         ImageIcon iconarranger = new ImageIcon(
                 new ImageIcon("C:/Image/arranger.png")
@@ -271,7 +274,7 @@ public class FenetrePrincipale extends JFrame  {
         // Attribut de la classe pour pouvoir le modifier depuis les boutons
 
 
-      // Label pour afficher la vitesse
+        // Label pour afficher la vitesse
         JLabel labelVitesse = new JLabel("Vitesse : " + vitesse);
         ImageIcon iconvitesse = new ImageIcon(
                 new ImageIcon("C:/Image/vitesse.png")
@@ -289,12 +292,11 @@ public class FenetrePrincipale extends JFrame  {
 
         JButton boutonDiminuer = new JButton("▼");
         boutonDiminuer.addActionListener(e -> {
-            if(vitesse > 10) {
+            if (vitesse > 10) {
                 vitesse -= 10;
                 labelVitesse.setText("Vitesse : " + vitesse);
             }
         });
-
 
 
         //Ajout des boutons à la barre
@@ -314,25 +316,27 @@ public class FenetrePrincipale extends JFrame  {
         barre1.add(boutonAugmenter);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         setVisible(true);
 
     }
 
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == ramItem) {
+            ouvrirFenetreRAM();
 
+        } else {
+            ouvrirFenetreROM();
+        }
+    }
 
+    private void ouvrirFenetreRAM() {
+        FenetreRAM ram = new FenetreRAM(this.m);
+        ram.setVisible(true);
+    }
+
+    private void ouvrirFenetreROM() {
+        FenetreROM rom = new FenetreROM(this.m);
+        rom.setVisible(true);
+    }
 
 }
