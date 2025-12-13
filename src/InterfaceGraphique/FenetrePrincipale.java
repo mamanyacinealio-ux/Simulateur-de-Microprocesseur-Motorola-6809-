@@ -1,11 +1,12 @@
 package InterfaceGraphique;
+import CPU.CPU6809;
 import Memoire.MemoireRam;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
-
+import CPU.RegistreCPU;
 
 import java.awt.event.*;
 import java.awt.*;
@@ -17,11 +18,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private MemoireRam m;
     private JMenuItem ramItem;
     private JMenuItem romItem;
-
+    private RegistreCPU registrecpu;
+    private CPU6809 cpu;
     public FenetrePrincipale() {
         //FENETRE PRINCIPALE
 
-        this.m = new MemoireRam();
+        this.m = new MemoireRam(65536);
+         this.registrecpu=registrecpu;
+         this.cpu=cpu;
         setTitle("MOTO6809");
         setBounds(0, 0, 1920, 140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,8 +43,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition();
-                fenetreEdition.setVisible(true);
+               FenetreEdition fenetreEdition=new FenetreEdition(registrecpu,cpu);
+               fenetreEdition.setVisible(true);
             }
         });
         JMenuItem Ouvrir = new JMenuItem("Ouvrir");
@@ -129,8 +133,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         // OPTIONS DU MENU fenetre
         JMenuItem Programme = new JMenuItem("Programme");
-        ramItem = new JMenuItem("RAM");
-       romItem = new JMenuItem("ROM");
+         ramItem = new JMenuItem("RAM");
+        romItem = new JMenuItem("ROM");
         JMenuItem PIA = new JMenuItem("PIA");
         JMenuItem Arranger = new JMenuItem("Arranger ");
 
@@ -209,7 +213,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition();
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,cpu);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -223,11 +227,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         ouvrir1.setToolTipText("Ouvrir fichier");
 
         ouvrir1.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            int result = fileChooser.showOpenDialog(FenetrePrincipale.this);
+            JFileChooser t = new JFileChooser();
+            int result = t.showOpenDialog(FenetrePrincipale.this);
 
             if (result == JFileChooser.APPROVE_OPTION) {
-                File fichierSelectionne = fileChooser.getSelectedFile();
+                File fichierSelectionne = t.getSelectedFile();
                 JOptionPane.showMessageDialog(FenetrePrincipale.this,
                         "Fichier sélectionné : " + fichierSelectionne.getAbsolutePath());
             }
@@ -253,7 +257,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         editeur.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition();
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,cpu);
                 fenetreEdition.setVisible(true);
             }
         });

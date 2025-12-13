@@ -4,61 +4,86 @@ import java.util.HashSet;
 import java.util.Set;
 import InterfaceGraphique.FenetreEdition ;
 public class Syntaxe {
+
+
+
+
     //LIste des instructions
     private static final Set<String> CODEI = new HashSet<>(Arrays.asList(
             "LDA", "LDB", "STA", "STB", "JMP", "ADD", "SUB", "BRA", "NOP"
     ));
 
-    public static boolean VerifierLigne(String lignes) {
+    private FenetreEdition fenetre;
+    public Syntaxe(FenetreEdition fenetre) {
+        this.fenetre = fenetre; //
+        String code = fenetre.getCode();
+        System.out.println("CODE = [" + fenetre.getCode() + "]");
+    }
 
-        lignes = lignes.trim().toUpperCase();
-        if (lignes.isEmpty() || lignes.startsWith(";")) return true;
+    public static boolean VerifierLigne(String ligne) {
+        ligne = ligne.trim().toUpperCase();
 
-        String[] partie = lignes.split("\\s+", 2);
+        if (ligne.isEmpty() || ligne.startsWith(";")) return true;
+
+        // END é permitido e não tem operando
+        if (ligne.equals("END")) return true;
+
+        String[] partie = ligne.split("\\s+", 2);
         String codei = partie[0];
-         //verification du code d'instruction
+
+        // Verifica instrução
         if (!CODEI.contains(codei)) {
-            System.out.println("Erreur: code d'instruction  inconnu -> " + codei);
+            System.out.println("Erro: instrution inconun -> " + codei);
             return false;
         }
 
-        //verification de l'opérande
-        if (partie.length > 1) {
-            String operande = partie[1].trim();
-            if (operande.isEmpty()) {
-                System.out.println("Erreur: opérande manquant pour " + codei);
-                return false;
-            }
+        // Se não houver operando, mas a instrução precisa de um
+        if (codei.equals("NOP")) return true; // NOP não tem operando
+
+        if (partie.length == 1) {
+            System.out.println("Erro: manque operande -> " + codei);
+            return false;
         }
 
-        return true;
+        String operande = partie[1].trim();
+
+        // Aceitar qualquer formato válido do 6809:
+        if (operande.matches("#?\\$?[0-9A-F]+"))   // #$12  | $12 | 12 hex
+            return true;
+
+        if (operande.matches("#?\\d+"))           // #10 | 10 decimal
+            return true;
+
+        if (operande.matches("[A-Z_][A-Z0-9_]*")) // LABEL
+            return true;
+
+        // Se não for nenhum dos formatos, erro
+        System.out.println("Erro: operande inválide -> " + operande);
+        return false;
     }
 
 
 
-    private FenetreEdition fenetre;
-    public Syntaxe(FenetreEdition fenetre) {
-        this.fenetre = fenetre; 
-        String code = fenetre.getCode();
-    }
+
     public static boolean VerifierCode(String code) {
         boolean OK = true;
-        String[] lignes = code.split("\n");
-        for (int i = 0; i < lignes.length; i++) {
-            boolean ok = VerifierLigne(lignes[i]);
+        String[] ligne = code.replace("\r", "").split("\n");
+
+        for (int i = 0; i < ligne.length; i++) {
+            boolean ok = VerifierLigne(ligne[i]);
             if (!ok){
-                System.out.println("Ligne " + (i+1) + " invalide: " + lignes[i]);
+                System.out.println("Ligne " + (i+1) + " invalide: " + ligne[i]);
             OK=false;}
         }
 
         //Vérification de la dernière ligne (END)
-        int ENDIndex = lignes.length - 1;
-        while (ENDIndex >= 0 && (lignes[ENDIndex].trim().isEmpty() || lignes[ENDIndex].trim().startsWith(";"))) {
+        int ENDIndex = ligne.length - 1;
+        while (ENDIndex >= 0 && (ligne[ENDIndex].trim().isEmpty() || ligne[ENDIndex].trim().startsWith(";"))) {
             ENDIndex--;
         }
-        if (ENDIndex < 0 || !lignes[ENDIndex].trim().equalsIgnoreCase("END")) {
+        if (ENDIndex < 0 || !ligne[ENDIndex].trim().equalsIgnoreCase("END")) {
             System.out.println("Erreur: le code doit se terminer par 'END'");
-            OK=false;
+          OK=false;
         }
 
         return OK;

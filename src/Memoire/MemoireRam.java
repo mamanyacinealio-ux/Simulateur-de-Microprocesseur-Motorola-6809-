@@ -7,8 +7,8 @@ public class MemoireRam {
 
     public static final int ROM_START = 0xFC00;
 
-    public MemoireRam() {
-        this.memoire = new byte[0x65535];
+    public MemoireRam(int taile) {
+        this.memoire = new byte[taile];
 
     }
     public int getTaile(){
@@ -17,8 +17,10 @@ public class MemoireRam {
 
 
     public byte read(int address) {
-            return memoire[address & 0xFB00];
-        }
+
+            return memoire[address ];
+    }
+
 
         public void write(int address, byte value) {
             if (address >= ROM_START)
@@ -31,8 +33,6 @@ public class MemoireRam {
             for (int i = 0; i < rom.length; i++) {
                 memoire[ROM_START + i] = rom[i];
             }
-
-
         }
     }
 

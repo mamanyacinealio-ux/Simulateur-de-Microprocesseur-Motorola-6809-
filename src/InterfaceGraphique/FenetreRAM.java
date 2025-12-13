@@ -7,17 +7,17 @@ import  Memoire.MemoireRam;
 // Fenetre RAM
 public class FenetreRAM extends JFrame {
 
-    // 1. ATRIBUTO: Armazena a referência passada para a memória
+
     private MemoireRam memoire;
     private JTable tabelaMemoria;
 
-    // Construtor: RECEBE a referência da memória (resolve o NPE se a Main.java estiver correta)
+
     public FenetreRAM(MemoireRam m) {
-        // ESSENCIAL: Armazena a referência recebida.
         this.memoire = m;
 
         // --- Configuração Básica da Janela ---
         setTitle("RAM");
+
         // Quando fechar esta janela, apenas ela se fecha (não o programa)
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -52,33 +52,34 @@ public class FenetreRAM extends JFrame {
      * Define como a JTable busca e exibe os dados da MemoireRam.
      */
     private static class MemoriaTableModel extends AbstractTableModel {
-
-        private final MemoireRam memoriaFonte;
-        private final String[] nomesColunas = {"Adress", "Byte"};
+private final int Adress_initiel_RAM=0x0000;
+        private final int Taille_RAM_Affich=MemoireRam.ROM_START;
+        private final MemoireRam memoireram;
+        private final String[] nomcolunes = {"Adress", "Byte"};
 
         // O tamanho total da memória é obtido na inicialização (ex: 65536)
-        private final int TAMANHO_MEMORIA;
+        private final int Taille_Memoire;
 
         public MemoriaTableModel(MemoireRam memoria) {
-            this.memoriaFonte = memoria;
+            this.memoireram = memoria;
             // Requer que MemoireRam tenha o método getTamanho()
-            this.TAMANHO_MEMORIA = memoria.getTaile();
+            this.Taille_Memoire = MemoireRam.ROM_START;
         }
 
         @Override
         public int getColumnCount() {
-            return nomesColunas.length; // 2 colunas: Endereço e Byte
+            return nomcolunes.length; // 2 colunas: Endereço e Byte
         }
 
         @Override
         public String getColumnName(int col) {
-            return nomesColunas[col];
+            return nomcolunes[col];
         }
 
         @Override
         public int getRowCount() {
             // Cada linha é um endereço de memória
-            return TAMANHO_MEMORIA;
+            return Taille_Memoire;
         }
 
         @Override
@@ -91,7 +92,7 @@ public class FenetreRAM extends JFrame {
             } else if (col == 1) {
                 // Coluna 1: Valor (Byte) no endereço
                 // Chamada segura, pois this.memoria não deve ser nulo
-                int valor = memoriaFonte.read(endereco) & 0xFF;
+                int valor = memoireram.read(endereco) & 0xFF;
                 // Formato hexadecimal de 2 dígitos (00 a FF)
                 return String.format("%02X", valor);
             }
@@ -105,19 +106,19 @@ public class FenetreRAM extends JFrame {
                 try {
                     String s = (String) value;
                     // Tenta converter a string de volta para um inteiro base 16 (hex)
-                    int novoValor = Integer.parseInt(s.trim(), 16);
+                    int nouvelle = Integer.parseInt(s.trim(), 16);
 
-                    if (novoValor >= 0 && novoValor <= 255) {
+                    if (nouvelle >= 0 && nouvelle <= 255) {
                         // Escreve na memória (o método write usa byte)
-                        memoriaFonte.write(row, (byte) novoValor);
+                        memoireram.write(row, (byte) nouvelle);
 
                         // Notifica a JTable para redesenhar a célula
                         fireTableCellUpdated(row, col);
                     } else {
-                        JOptionPane.showMessageDialog(null, "Valor inválido. Use um valor hexadecimal de 00 a FF.");
+                        JOptionPane.showMessageDialog(null, "Valeur invalide. utilisez une valeur hexadecimal");
                     }
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(null, "Entrada inválida. Digite um número hexadecimal.");
+                    JOptionPane.showMessageDialog(null, "Entree envalhie.entrez un nombre hexadecimal.");
                 }
             }
         }
