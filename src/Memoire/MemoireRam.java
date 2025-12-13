@@ -5,7 +5,7 @@ public class MemoireRam {
 
 
 
-    public static final int ROM_START = 0xE000;
+    public static final int ROM_START = 0xFC00;
 
     public MemoireRam(int taile) {
         this.memoire = new byte[taile];
@@ -17,14 +17,16 @@ public class MemoireRam {
 
 
     public byte read(int address) {
-            return memoire[address & 0xFFFF];
-        }
+
+            return memoire[address ];
+    }
+
 
         public void write(int address, byte value) {
             if (address >= ROM_START)
                 return;
 
-            memoire[address & 0xFFFF] = value;
+            memoire[address & 0xFB00] = value;
         }
 
         public void loadROM(byte[] rom) {

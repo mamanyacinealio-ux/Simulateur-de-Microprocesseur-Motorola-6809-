@@ -51,7 +51,7 @@ public class FenetreCPU extends JFrame {
 
 
         // champ 2
-        champTexte2 = new JTextField("RIEN");
+        champTexte2 = new JTextField("");
         champTexte2.setFont(new Font("Arial", Font.BOLD, 16));
         champTexte2.setForeground(Color.BLACK);
         champTexte2.setBackground(Color.WHITE);
@@ -253,9 +253,6 @@ public class FenetreCPU extends JFrame {
         champDP.setText(String.format("%02X", registreCPU.getDP()));
         champflags.setText(String.format("%02X", registreCPU.getCC()));
     }
-
-
-
 
 
 
