@@ -1,13 +1,13 @@
 package Memoire;
 
-public class MemoireRam {
+public class Memoire {
     private byte[] memoire;
 
 
 
     public static final int ROM_START = 0xFC00;
 
-    public MemoireRam(int taile) {
+    public Memoire(int taile) {
         this.memoire = new byte[taile];
 
     }

@@ -1,34 +1,26 @@
-import CPU.CPU6809;
 import Instruction.Syntaxe;
-import Memoire.MemoireRam;
+import Memoire.Memoire;
 import InterfaceGraphique.FenetreCPU;
 import InterfaceGraphique.FenetreEdition;
 import CPU.RegistreCPU;
 import InterfaceGraphique.FenetrePrincipale;
+import Instruction.Instruction;
 
-import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
 
+                RegistreCPU rcpu = new RegistreCPU();
+                FenetreEdition f=new FenetreEdition(rcpu);
+                FenetrePrincipale F=new FenetrePrincipale(rcpu);
+                FenetreCPU h= new FenetreCPU(rcpu);
+                Instruction instruction = new Instruction();
+                instruction.setRegistre(rcpu);
+                rcpu.initialise(instruction);
 
 
-                MemoireRam m=new MemoireRam(65536);
-
-                RegistreCPU reg = new RegistreCPU();
-                CPU6809 cpu=new CPU6809(reg,m);
-                FenetrePrincipale F=new FenetrePrincipale();
 
 
-                FenetreCPU h= new FenetreCPU(reg);
-
-                FenetreEdition f=new FenetreEdition(reg,cpu);
-                Syntaxe syntaxe = new Syntaxe(f);
-
-
-                //f.setVisible(true);
-                //System.out.println(syntaxe);
-                //F.setVisible(true);
             }
 
 

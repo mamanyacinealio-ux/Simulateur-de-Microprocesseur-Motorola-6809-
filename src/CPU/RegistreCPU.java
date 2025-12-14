@@ -1,8 +1,15 @@
 package CPU;
-import Memoire.MemoireRam;
-import InterfaceGraphique.FenetreCPU;
+import Instruction.Instruction;
+import Memoire.Memoire;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiConsumer;
+
 public class RegistreCPU {
 
     //Accumulateurs A et B
@@ -18,7 +25,7 @@ public class RegistreCPU {
     private int PC;
     private int CC;
     private int DP;
-    private MemoireRam memoire;
+    private Memoire memoire;
     private String instrution;
 
     public RegistreCPU() {
@@ -35,8 +42,62 @@ public class RegistreCPU {
         this.DP = 0;
 
     }
+    public Map<String, BiConsumer<String, String>> instructionsT = new HashMap<>();
 
+    public void initialise(Instruction instruction) {
+        instructionsT.put("LDA", instruction::lda); // lda(mode, operande)
+    }
+    public boolean fetch(String prog)
+    {  System.out.println("fetch");
+       int i=0, j=0;
+       String[] lignes = prog.split("\\R");
+       if(lignes.length==0) return false;
 
+       for(String ligne : lignes)
+           {   if(ligne.isEmpty()) continue;
+               if (ligne.equalsIgnoreCase("END")) continue;
+
+               String[] mot = ligne.split("\\s+");
+               if (mot.length < 2) continue;
+               String instruction = mot[0];
+               String Operande = mot[1];
+               if(instructionsT.containsKey(instruction)) i++;
+               j++;
+           }
+        System.out.println(i+j);
+           return i==j;
+
+    }
+    public String decode(String x)
+    {   System.out.println("decode");
+        if(x.charAt(0)=='#' && x.charAt(1)=='$')
+            return "IMMEDIAT";
+        else if(x.charAt(0)=='$' && x.length()==5)
+            return "ETENDUE";
+        else if(x.charAt(0)=='[' && x.charAt(1)=='$' && x.charAt(6)==']' && x.length()==7)
+            return "ETENDUE INDIRECTE";
+        else if(x.charAt(0)=='<' && x.charAt(1)=='$' && x.length()==6)
+            return "DIRECT";
+        else if(x.length()==2 && x.charAt(0)==',' && (x.charAt(1)=='X' || x.charAt(1)=='Y'))
+            return "INDEXEDEPNULL";
+        else
+            return "INHERENT";
+
+    }
+    public void execute(String i, String mode,String operande)
+    {
+        BiConsumer<String,String> inst = instructionsT.get(i);
+        if(inst != null) inst.accept(mode,operande);
+        System.out.println("execute");
+        System.out.println(mode);
+
+    }
+   /* public int decode(String ligne)
+    {
+        String[]  mot = ligne.split("\\s+");
+        String ins = mot[0];
+        String mod = mot[1];
+    }*/
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     // Méthodes pour ajouter / supprimer un listener
@@ -164,7 +225,7 @@ public class RegistreCPU {
 
     public void reset() {
         PC = 0x0000;
-        A = B = X = Y = U = S = DP = CC = 0;
+        A = B = X = Y = U = S = DP = CC = 0x00;
         cycles = 0;
     }
 

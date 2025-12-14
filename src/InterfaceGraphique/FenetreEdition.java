@@ -1,20 +1,22 @@
 package InterfaceGraphique;
-import CPU.CPU6809;
 import Instruction.Syntaxe;
 import javax.swing.*;
 import java.awt.*;
 import CPU.RegistreCPU;
-import Memoire.MemoireRam;
+import Memoire.Memoire;
+import Instruction.Instruction;
 
 public class FenetreEdition extends JFrame {
 
     private JTextArea zoneTexte;
-    private MemoireRam memoire;
+    private Memoire memoire;
     private RegistreCPU registres;
-    private CPU6809 cpu = new CPU6809(registres,memoire);
-    public FenetreEdition(RegistreCPU registrecpu,CPU6809 cpu) {
-this.registres=registrecpu;
-this.cpu=cpu;
+    private Instruction instruction;
+    JButton BMAJ;
+
+    public FenetreEdition(RegistreCPU registrecpu) {
+        this.registres = registrecpu;
+
         setTitle("Édition");
         setBounds(320, 200, 250, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,8 +29,29 @@ this.cpu=cpu;
                 new ImageIcon("C:/Users/Maman/PROJET JAVA/Simulateur de Microprocesseur Motorola 6809/src/image/MAJJ.png")
                         .getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)
         );
-        JButton BMAJ = new JButton(MAJ);
+        BMAJ = new JButton(MAJ);
         BMAJ.setToolTipText("Exécuter");
+        BMAJ.addActionListener(e -> {
+            String code = getCode();
+
+            if (!Syntaxe.VerifierCode(code)) {
+                JOptionPane.showMessageDialog(this, "Erreur de syntaxe.");
+                return;
+            }
+
+            if (!registres.fetch(code)) {
+                JOptionPane.showMessageDialog(this, "Code invalide.");
+                return;
+            }
+
+            String[] mot = code.split("\\s+");
+
+            String instruction = mot[0];
+            String operande = mot[1];
+            String mode = registres.decode(operande);
+            registres.execute(instruction,mode,operande);
+        });
+
 
         ImageIcon RECHERCHE = new ImageIcon(
                 new ImageIcon("C:/Users/Maman/PROJET JAVA/Simulateur de Microprocesseur Motorola 6809/src/image/RECHERCHE.png")
@@ -61,24 +84,25 @@ this.cpu=cpu;
 
         add(new JScrollPane(zoneTexte), BorderLayout.CENTER);
 
-        // ---- ACTION DU BOUTON Exécuter ----
-        BMAJ.addActionListener(e -> {
-            String code = getCode();
-            boolean Ok  = Syntaxe.VerifierCode(code); // ✔ CORREÇÃO AQUI
 
-            if (Ok) {
-               //  cpu.step();
-                 //registrecpu.getA();
 
-               // registrecpu.executarPrograma(code);
+
+
+               /* registrecpu.executarPrograma(code);
                 JOptionPane.showMessageDialog(this,"correcte" );
     registrecpu.reset();        } else {
                 JOptionPane.showMessageDialog(this, "❌ Code invalide. Regarde le console.");
             }
-        });
+        }*/
+
+
+
+
     }
 
-    public String getCode() {
-        return zoneTexte.getText();
+
+
+        public String getCode () {
+            return zoneTexte.getText();
+        }
     }
-}

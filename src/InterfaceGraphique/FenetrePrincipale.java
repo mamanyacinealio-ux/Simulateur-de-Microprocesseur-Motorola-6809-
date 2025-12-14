@@ -1,11 +1,9 @@
 package InterfaceGraphique;
-import CPU.CPU6809;
-import Memoire.MemoireRam;
+import Memoire.Memoire;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
+
 import CPU.RegistreCPU;
 
 import java.awt.event.*;
@@ -15,17 +13,16 @@ import java.io.File;
 public class FenetrePrincipale extends JFrame implements ActionListener {
     private int vitesse = 10;
     private boolean programmeCharge = false;
-    private MemoireRam m;
+    private Memoire m;
     private JMenuItem ramItem;
     private JMenuItem romItem;
     private RegistreCPU registrecpu;
-    private CPU6809 cpu;
-    public FenetrePrincipale() {
+    public FenetrePrincipale(RegistreCPU registrecpu ) {
         //FENETRE PRINCIPALE
 
-        this.m = new MemoireRam(65536);
+        this.m = new Memoire(65536);
          this.registrecpu=registrecpu;
-         this.cpu=cpu;
+
         setTitle("MOTO6809");
         setBounds(0, 0, 1920, 140);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,7 +40,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               FenetreEdition fenetreEdition=new FenetreEdition(registrecpu,cpu);
+               FenetreEdition fenetreEdition=new FenetreEdition(registrecpu);
                fenetreEdition.setVisible(true);
             }
         });
@@ -213,7 +210,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,cpu);
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -257,7 +254,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         editeur.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,cpu);
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu);
                 fenetreEdition.setVisible(true);
             }
         });

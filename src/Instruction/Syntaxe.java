@@ -3,6 +3,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import InterfaceGraphique.FenetreEdition ;
+import InterfaceGraphique.FenetrePrincipale;
+
 public class Syntaxe {
 
 
@@ -14,10 +16,10 @@ public class Syntaxe {
     ));
 
     private FenetreEdition fenetre;
-    public Syntaxe(FenetreEdition fenetre) {
-        this.fenetre = fenetre; //
-        String code = fenetre.getCode();
-        System.out.println("CODE = [" + fenetre.getCode() + "]");
+    public Syntaxe(FenetreEdition f) {
+        this.fenetre = f;
+       // String code = fenetre.getCode();
+
     }
 
     public static boolean VerifierLigne(String ligne) {
@@ -97,9 +99,14 @@ public class Syntaxe {
         }
     }
 
-    public String toString() {
-        return "Syntaxe : " + VerifierCode(fenetre.getCode());
+    public String getCode() {
+        boolean ver= VerifierCode(fenetre.getCode());
+        if (ver) {
+        return fenetre.getCode();}
+        else
+        return null;
     }
+    public Syntaxe(){};
 
 }
 

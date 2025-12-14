@@ -2,17 +2,17 @@ package InterfaceGraphique;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import  Memoire.MemoireRam;
+import Memoire.Memoire;
 
 // Fenetre RAM
 public class FenetreRAM extends JFrame {
 
 
-    private MemoireRam memoire;
+    private Memoire memoire;
     private JTable tabelaMemoria;
 
 
-    public FenetreRAM(MemoireRam m) {
+    public FenetreRAM(Memoire m) {
         this.memoire = m;
 
         // --- Configuração Básica da Janela ---
@@ -53,17 +53,17 @@ public class FenetreRAM extends JFrame {
      */
     private static class MemoriaTableModel extends AbstractTableModel {
 private final int Adress_initiel_RAM=0x0000;
-        private final int Taille_RAM_Affich=MemoireRam.ROM_START;
-        private final MemoireRam memoireram;
+        private final int Taille_RAM_Affich= Memoire.ROM_START;
+        private final Memoire memoireram;
         private final String[] nomcolunes = {"Adress", "Byte"};
 
         // O tamanho total da memória é obtido na inicialização (ex: 65536)
         private final int Taille_Memoire;
 
-        public MemoriaTableModel(MemoireRam memoria) {
+        public MemoriaTableModel(Memoire memoria) {
             this.memoireram = memoria;
             // Requer que MemoireRam tenha o método getTamanho()
-            this.Taille_Memoire = MemoireRam.ROM_START;
+            this.Taille_Memoire = Memoire.ROM_START;
         }
 
         @Override

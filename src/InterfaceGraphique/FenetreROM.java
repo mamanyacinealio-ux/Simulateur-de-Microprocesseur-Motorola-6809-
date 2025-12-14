@@ -1,7 +1,7 @@
 package InterfaceGraphique;
 // FenetreROM.java
 
-import Memoire.MemoireRam;
+import Memoire.Memoire;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -15,10 +15,10 @@ public class FenetreROM extends JFrame{
 
 
 
-        private MemoireRam memoire;
+        private Memoire memoire;
         private JTable tableauMemoire;
 
-        public FenetreROM(MemoireRam m) {
+        public FenetreROM(Memoire m) {
 
             this.memoire = m;
 
@@ -50,15 +50,15 @@ public class FenetreROM extends JFrame{
 
         private static class ROMTableModel extends AbstractTableModel {
 
-            private final MemoireRam memoriaFonte;
+            private final Memoire memoriaFonte;
 
             private final String[] nomesColunas = {"", ""};
 
             // A ROM tem 8KB (32768 - 65535) = 8192 bytes
             private final int Tail_ROM = 0x400; // 8192 bytes
-            private final int Adress_Initial = MemoireRam.ROM_START; // Ex: 0xE000
+            private final int Adress_Initial = Memoire.ROM_START; // Ex: 0xE000
 
-            public ROMTableModel(MemoireRam memoria) {
+            public ROMTableModel(Memoire memoria) {
                 this.memoriaFonte = memoria;
             }
 
