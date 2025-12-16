@@ -38,12 +38,10 @@ public class FenetreEdition extends JFrame {
                 JOptionPane.showMessageDialog(this, "Erreur de syntaxe.");
                 return;
             }
-
             if (!registres.fetch(code)) {
                 JOptionPane.showMessageDialog(this, "Code invalide.");
                 return;
             }
-
             String[] mot = code.split("\\s+");
 
             String instruction = mot[0];
