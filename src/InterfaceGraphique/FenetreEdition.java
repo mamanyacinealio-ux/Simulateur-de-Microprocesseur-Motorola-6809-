@@ -150,20 +150,60 @@ public class FenetreEdition extends JFrame {
 
                 // 1. Écrit l’Opcode
                 memoire.write(adr, (byte) opcode);
-                adr++;
+
 
                 // 2. Écrit les opérandes (immédiat uniquement, pour simplification)
-                if (nbOctect > 1) {
-                    if ("IMMEDIAT".equals(mode)) {
+               // if (nbOctect == 2) {
+                 //   if ("IMMEDIAT".equals(mode)) {
                         // Exemple : '#$10' → '10'
-                        String valHex = operando.substring(2);
-                        int valByte = Integer.parseInt(valHex, 16);
-                        memoire.write(adr, (byte) valByte);
-                        adr++;
-                    }
+                  //      String valHex = operando.substring(2);
+                     //   int valByte = Integer.parseInt(valHex, 16);
+                    //    memoire.write(adr, (byte) valByte);
+                     //   adr++;
+                   // }
                     // Ajouter ici la logique pour les opérandes 16 bits ou
                     // d’autres modes (ETENDU, etc.)
+               // }
+
+
+
+
+// 2. Escreve os operandos baseados no tamanho total da instrução
+                if (nbOctect > 1) {
+                    // Limpa caracteres especiais para pegar apenas o número hex
+                    String valHex = operando.replaceAll("[#$<>\\s\\[\\]]", "");
+                    if (valHex.contains(",")) valHex = valHex.split(",")[0];
+
+                    int val = Integer.parseInt(valHex, 16);
+
+                    if (nbOctect == 2) {
+                        // Ex: LDA #$10 -> Grava 1 byte
+                        memoire.write(adr + 1, (byte) (val & 0xFF));
+                    }
+                    else if (nbOctect == 3) {
+                        // Ex: LDX #$1234 -> Grava 2 bytes (High e Low)
+                        memoire.write(adr + 1, (byte) (val >> 8));   // Byte mais significativo
+                        memoire.write(adr + 2, (byte) (val & 0xFF)); // Byte menos significativo
+                    }
+                    else if (nbOctect == 4) {
+                        // Ex: LDY #$1234 (Prefixo 10 + 8E + 2 bytes)
+                        // Como o prefixo já foi tratado no fetch do Step,
+                        // aqui você precisa garantir que grava os dados na posição correta.
+                        memoire.write(adr + 2, (byte) (val >> 8));
+                        memoire.write(adr + 3, (byte) (val & 0xFF));
+                    }
                 }
+
+                adr += nbOctect; // Avança o endereço para a próxima instrução
+
+
+
+
+
+
+
+
+
 
                 // Remarque : pour les instructions de 3 octets (ETENDU),
                 // vous devrez avancer 'adr' encore une fois ici.
