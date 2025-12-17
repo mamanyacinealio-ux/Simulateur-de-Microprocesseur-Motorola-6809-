@@ -1,4 +1,5 @@
 package InterfaceGraphique;
+import Instruction.Instruction;
 import Memoire.Memoire;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -17,11 +18,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JMenuItem ramItem;
     private JMenuItem romItem;
     private RegistreCPU registrecpu;
-    public FenetrePrincipale(RegistreCPU registrecpu ) {
+    private Instruction I;
+    private FenetreROM ROM;
+    public FenetrePrincipale(RegistreCPU registrecpu,Memoire m,Instruction I ) {
         //FENETRE PRINCIPALE
-
+        this.registrecpu=registrecpu;
         this.m = new Memoire(65536);
-         this.registrecpu=registrecpu;
+        this.I=I;
+        ;
 
         setTitle("MOTO6809");
         setBounds(0, 0, 1920, 140);
@@ -40,8 +44,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               FenetreEdition fenetreEdition=new FenetreEdition(registrecpu);
-               fenetreEdition.setVisible(true);
+                FenetreEdition fenetreEdition=new FenetreEdition(registrecpu,m,I,ROM);
+                fenetreEdition.setVisible(true);
             }
         });
         JMenuItem Ouvrir = new JMenuItem("Ouvrir");
@@ -130,7 +134,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         // OPTIONS DU MENU fenetre
         JMenuItem Programme = new JMenuItem("Programme");
-         ramItem = new JMenuItem("RAM");
+        ramItem = new JMenuItem("RAM");
         romItem = new JMenuItem("ROM");
         JMenuItem PIA = new JMenuItem("PIA");
         JMenuItem Arranger = new JMenuItem("Arranger ");
@@ -210,7 +214,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu);
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -254,7 +258,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         editeur.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu);
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -402,7 +406,3 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     }
 
 }
-
-
-
-

@@ -244,6 +244,7 @@ public class FenetreCPU extends JFrame {
 
         // actualiser les champs
         champPC.setText(String.format("%04X", registreCPU.getPC()));
+        champTexte2.setText(String.format("%04X",registreCPU.getD()));
         champA.setText(String.format("%02X", registreCPU.getA()));
         champB.setText(String.format("%02X", registreCPU.getB()));
         champX.setText(String.format("%04X", registreCPU.getX()));
