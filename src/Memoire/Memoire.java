@@ -1,8 +1,10 @@
 package Memoire;
 
 public class Memoire {
+
     private byte[] memoire;
 
+    Memoire memoireI = new Memoire(65536);
 
 
     public static final int ROM_START = 0xFC00;
@@ -16,6 +18,8 @@ public class Memoire {
     }
 
 
+
+
     public byte read(int address) {
 
             return memoire[address ];
@@ -26,7 +30,7 @@ public class Memoire {
             if (address >= ROM_START)
                 return;
 
-            memoire[address & 0xFB00] = value;
+            memoire[address & 0xFFFF] = value;
         }
 
         public void loadROM(byte[] rom) {

@@ -5,6 +5,7 @@ import InterfaceGraphique.FenetreEdition;
 import CPU.RegistreCPU;
 import InterfaceGraphique.FenetrePrincipale;
 import Instruction.Instruction;
+import Memoire.Memoire;
 
 
 public class Main {
@@ -17,6 +18,7 @@ public class Main {
                 Instruction instruction = new Instruction();
                 instruction.setRegistre(rcpu);
                 rcpu.initialise(instruction);
+
 
 
 
