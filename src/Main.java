@@ -1,36 +1,42 @@
-import Instruction.Syntaxe;
+
+
+import CPU.RegistreCPU;
+import InterfaceGraphique.FenetreROM;
 import Memoire.Memoire;
 import InterfaceGraphique.FenetreCPU;
 import InterfaceGraphique.FenetreEdition;
-import CPU.RegistreCPU;
 import InterfaceGraphique.FenetrePrincipale;
 import Instruction.Instruction;
-
+import javax.swing.SwingUtilities;
 
 public class Main {
+
+    private static final int MEMORY_SIZE = 0x10000;
+
     public static void main(String[] args) {
 
-                RegistreCPU rcpu = new RegistreCPU();
-                FenetreEdition f=new FenetreEdition(rcpu);
-                FenetrePrincipale F=new FenetrePrincipale(rcpu);
-                FenetreCPU h= new FenetreCPU(rcpu);
-                Instruction instruction = new Instruction();
-                instruction.setRegistre(rcpu);
-                rcpu.initialise(instruction);
+        SwingUtilities.invokeLater(() -> {
+
+            Memoire m = new Memoire(MEMORY_SIZE);
+
+            Instruction instruction = new Instruction(null, m);
+
+            RegistreCPU rcpu = new RegistreCPU();
+
+            rcpu = new RegistreCPU(m, instruction);
+
+            instruction.setRegistreCPU(rcpu);
+
+            FenetreROM ROM=new FenetreROM(m);
+            FenetreEdition f = new FenetreEdition(rcpu, m, instruction,ROM);
+
+            FenetreCPU h = new FenetreCPU(rcpu);
+
+            FenetrePrincipale F = new FenetrePrincipale(rcpu,m,instruction);
 
 
-
-
-            }
-
-
-
-
-
-
-
-
-
-
-
+            //f.setVisible(true);
+            h.setVisible(true);
+        });
+    }
 }

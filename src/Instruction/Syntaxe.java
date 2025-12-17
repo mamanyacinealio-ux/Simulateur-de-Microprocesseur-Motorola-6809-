@@ -18,7 +18,7 @@ public class Syntaxe {
     private FenetreEdition fenetre;
     public Syntaxe(FenetreEdition f) {
         this.fenetre = f;
-       // String code = fenetre.getCode();
+        // String code = fenetre.getCode();
 
     }
 
@@ -50,10 +50,10 @@ public class Syntaxe {
         String operande = partie[1].trim();
 
         // Aceitar qualquer formato válido do 6809:
-        if (operande.matches("#?\\$?[0-9A-F]+"))   // #$12  | $12 | 12 hex
+        if (operande.matches("#?\\$?[0-9A-F]{2}"))   // #$12  | $12 | 12 hex
             return true;
 
-        if (operande.matches("#?\\d+"))           // #10 | 10 decimal
+        if (operande.matches("$?\\d+"))           // #10 | 10 decimal
             return true;
 
         if (operande.matches("[A-Z_][A-Z0-9_]*")) // LABEL
@@ -75,7 +75,7 @@ public class Syntaxe {
             boolean ok = VerifierLigne(ligne[i]);
             if (!ok){
                 System.out.println("Ligne " + (i+1) + " invalide: " + ligne[i]);
-            OK=false;}
+                OK=false;}
         }
 
         //Vérification de la dernière ligne (END)
@@ -85,7 +85,7 @@ public class Syntaxe {
         }
         if (ENDIndex < 0 || !ligne[ENDIndex].trim().equalsIgnoreCase("END")) {
             System.out.println("Erreur: le code doit se terminer par 'END'");
-          OK=false;
+            OK=false;
         }
 
         return OK;
@@ -102,11 +102,10 @@ public class Syntaxe {
     public String getCode() {
         boolean ver= VerifierCode(fenetre.getCode());
         if (ver) {
-        return fenetre.getCode();}
+            return fenetre.getCode();}
         else
-        return null;
+            return null;
     }
     public Syntaxe(){};
 
 }
-

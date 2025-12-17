@@ -101,4 +101,9 @@ public class FenetreROM extends JFrame{
                 // La ROM  ne doit pas etre modifiable
             }
         }
+        public void atualiseTableaux(){
+            if (tableauMemoire.getModel()instanceof ROMTableModel){
+                ((ROMTableModel)tableauMemoire.getModel()).fireTableDataChanged();
+            }
+        }
     }

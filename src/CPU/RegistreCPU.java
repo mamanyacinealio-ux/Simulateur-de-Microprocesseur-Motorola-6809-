@@ -1,145 +1,140 @@
 package CPU;
+
 import Instruction.Instruction;
 import Memoire.Memoire;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class RegistreCPU {
 
-    //Accumulateurs A et B
-    private int A;
-    private int B;
-    public int cycles;
+    // Registres du 6809
+    private int A, B, X, Y, U, S, PC, CC, DP;
 
-
-    private int X;
-    private int Y;
-    private int U;
-    private int S;
-    private int PC;
-    private int CC;
-    private int DP;
     private Memoire memoire;
-    private String instrution;
-
-    public RegistreCPU() {
-        this.memoire = memoire;
-
-        this.A = 0;
-        this.B = 0;
-
-
-        this.X = 0;
-        this.Y = 0;
-        this.S = 0;
-        this.Y = 0;
-        this.DP = 0;
-
-    }
-    public Map<String, BiConsumer<String, String>> instructionsT = new HashMap<>();
-
-    public void initialise(Instruction instruction) {
-        instructionsT.put("LDA", instruction::lda); // lda(mode, operande)
-    }
-    public boolean fetch(String prog)
-    {  System.out.println("fetch");
-       int i=0, j=0;
-       String[] lignes = prog.split("\\R");
-       if(lignes.length==0) return false;
-
-       for(String ligne : lignes)
-           {   if(ligne.isEmpty()) continue;
-               if (ligne.equalsIgnoreCase("END")) continue;
-
-               String[] mot = ligne.split("\\s+");
-               if (mot.length < 2) continue;
-               String instruction = mot[0];
-               String Operande = mot[1];
-               if(instructionsT.containsKey(instruction)) i++;
-               j++;
-           }
-        System.out.println(i+j);
-           return i==j;
-
-    }
-    public String decode(String x)
-    {   System.out.println("decode");
-        if(x.charAt(0)=='#' && x.charAt(1)=='$')
-            return "IMMEDIAT";
-        else if(x.charAt(0)=='$' && x.length()==5)
-            return "ETENDUE";
-        else if(x.charAt(0)=='[' && x.charAt(1)=='$' && x.charAt(6)==']' && x.length()==7)
-            return "ETENDUE INDIRECTE";
-        else if(x.charAt(0)=='<' && x.charAt(1)=='$' && x.length()==6)
-            return "DIRECT";
-        else if(x.length()==2 && x.charAt(0)==',' && (x.charAt(1)=='X' || x.charAt(1)=='Y'))
-            return "INDEXEDEPNULL";
-        else
-            return "INHERENT";
-
-    }
-    public void execute(String i, String mode,String operande)
-    {
-        BiConsumer<String,String> inst = instructionsT.get(i);
-        if(inst != null) inst.accept(mode,operande);
-        System.out.println("execute");
-        System.out.println(mode);
-
-    }
-   /* public int decode(String ligne)
-    {
-        String[]  mot = ligne.split("\\s+");
-        String ins = mot[0];
-        String mod = mot[1];
-    }*/
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-    // Méthodes pour ajouter / supprimer un listener
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
+    // Carte d’exécution : associe un Opcode (byte) à la logique d’exécution
+    // (méthodes définies dans la classe Instruction).
+    public final Map<Integer, Consumer<RegistreCPU>> executionMap = new HashMap<>();
+
+    // Constructeur principal : injecte les dépendances et configure la table des opcodes.
+    public RegistreCPU(Memoire memoire, Instruction instruction) {
+        this.memoire = memoire;
+        reset();
+
+        // --- Configuration automatique de executionMap ---
+        // Ici, nous associons les opcodes aux méthodes de la classe Instruction.
+        // Les opcodes sont obtenus à partir de la carte statique
+        // Instruction.opcodeDetails.
+
+        // Exemple d’opcodes listés dans la Logique (86_2, C6_2, 3A_1) :
+
+        // Opcode 0x86 : LDA Immédiat
+        executionMap.put(0x86, r -> instruction.LDA_IMMEDIATE());
+
+        // Opcode 0xC6 : LDB Immédiat
+        executionMap.put(0xC6, r -> instruction.LDB_IMMEDIATE());
+
+        // Opcode 0x3A : ABX Inhérent
+        executionMap.put(0x3A, r -> instruction.ABX_INHERENT());
+
+        // Ajouter tous les autres opcodes ici
+        // (ex : LDA_DIRECT, JMP_ETENDU, etc.)
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
+    // Constructeur vide pour le Main (si nécessaire)
+    public RegistreCPU() {
+        this(null, null);
     }
 
-    //PC
-    public int getPC() {
-        return PC;
+    // ------------------------------------
+    // CYCLE D’EXÉCUTION
+    // ------------------------------------
+
+    /**
+     * Lit un octet de la mémoire à l’adresse du PC et incrémente le PC.
+     * @return l’octet lu
+     */
+    public int fetchByte() {
+        if (memoire == null)
+            throw new IllegalStateException("Mémoire non initialisée.");
+
+        int pc = getPC();
+        int data = memoire.read(pc) & 0xFF;
+        setPC(pc + 1); // Avance le PC
+        return data;
     }
 
+    public int fetchWOrd() {
+        int haut = fetchByte();
+        int bas = fetchByte();
+
+        return (haut << 8) | bas;
+    }
+
+    public int getEffectiveAdressDirect() {
+        int offset = fetchByte();
+        return (getDP() << 8) | offset;
+    }
+
+    public int getEffectiveAdressEtendu() {
+        return fetchWOrd();
+    }
+
+    /**
+     * Exécute un seul cycle d’instruction (Fetch, Decode, Execute).
+     */
+    public void step() {
+        if (executionMap.isEmpty() || memoire == null) {
+            throw new IllegalStateException(
+                    "CPU non configurée ou table d’exécution vide."
+            );
+        }
+
+        int initialPC = getPC();
+        int opcode = fetchByte(); // 1. FETCH (lit l’opcode et avance le PC)
+
+        // 2. DECODE & EXECUTE
+        Consumer<RegistreCPU> executor = executionMap.get(opcode);
+
+        if (executor != null) {
+            executor.accept(this); // Exécute la méthode de Instruction
+        } else {
+            throw new IllegalArgumentException(
+                    "Opcode non implémenté / invalide : $"
+                            + String.format("%02X", opcode)
+                            + " à l’adresse : "
+                            + String.format("$%04X", initialPC)
+            );
+        }
+    }
+
+    // ------------------------------------
+    // GETTERS, SETTERS ET FIRE PROPERTY CHANGE
+    // ------------------------------------
+
+    public int getPC() { return PC; }
     public void setPC(int pc) {
         int old = this.PC;
-        this.PC = pc & 0xFFFF;
+        this.PC = pc & 0xFFFF; // Garantit que le PC est sur 16 bits
         pcs.firePropertyChange("PC", old, this.PC);
     }
 
-    //A
-    public int getA() {
-        return A;
-    }
-
+    public int getA() { return A & 0xFF; }
     public void setA(int a) {
         int old = this.A;
-        this.A = a & 0xFF;
+        this.A = a & 0xFF; // Garantit que A est sur 8 bits
         pcs.firePropertyChange("A", old, this.A);
     }
 
-    //...
-    public int getB() {
-        return B;
-    }
-
+    public int getB() { return B & 0xFF; }
     public void setB(int b) {
-        int old = B;
-        B = b & 0xFF;
-        pcs.firePropertyChange("B", old, B);
+        int old = this.B;
+        this.B = b & 0xFF; // Garantit que B est sur 8 bits
+        pcs.firePropertyChange("B", old, this.B);
     }
 
     public int getD() {
@@ -212,22 +207,22 @@ public class RegistreCPU {
         pcs.firePropertyChange("DP", old, DP);
     }
 
-    public String getInstrution() {
-        return instrution;
-
-    }
-
-    public void setInstrution(String inst) {
-        String old = this.instrution;
-        this.instrution = inst;
-        pcs.firePropertyChange("instrution", old, this.instrution);
-    }
+    // [Ajouter tous les autres getters et setters avec firePropertyChange si nécessaire]
 
     public void reset() {
-        PC = 0x0000;
-        A = B = X = Y = U = S = DP = CC = 0x00;
-        cycles = 0;
+        // Met tous les registres à zéro lors de l’initialisation
+        setPC(0);
+        setA(0);
+        setB(0);
+        setX(0);
+        setY(0);
+        setU(0);
+        setS(0);
+        setCC(0);
+        setDP(0);
     }
 
-
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
 }
