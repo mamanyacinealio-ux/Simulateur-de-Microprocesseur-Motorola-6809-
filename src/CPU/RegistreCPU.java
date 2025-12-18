@@ -38,11 +38,16 @@ public class RegistreCPU {
         // Opcode 0xC6 : LDB Immédiat
         executionMap.put(0xC6, r -> instruction.LDB_IMMEDIATE());
 
+        // Opcode 0x8E : LDX Immédiat
+        executionMap.put(0x8E, r -> instruction.LDX_IMMEDIATE());
+
+
+        // Opcode 0x108E : LDY Immédiat
+        executionMap.put(0x108E, r -> instruction.LDY_IMMEDIATE());
+
         // Opcode 0x3A : ABX Inhérent
         executionMap.put(0x3A, r -> instruction.ABX_INHERENT());
 
-        // Opcode 0x97 : STA direct
-        executionMap.put(0x97, r -> instruction.STA_DIRECT());
 
         // Ajouter tous les autres opcodes ici
         // (ex : LDA_DIRECT, JMP_ETENDU, etc.)
@@ -90,30 +95,71 @@ public class RegistreCPU {
     /**
      * Exécute un seul cycle d’instruction (Fetch, Decode, Execute).
      */
+    //public void step() {
+      //  if (executionMap.isEmpty() || memoire == null) {
+          //  throw new IllegalStateException(
+             //       "CPU non configurée ou table d’exécution vide."
+           // );
+      //  }
+
+        //int initialPC = getPC();
+        //int opcode = fetchByte(); // 1. FETCH (lit l’opcode et avance le PC)
+
+        // 2. DECODE & EXECUTE
+       // Consumer<RegistreCPU> executor = executionMap.get(opcode);
+
+       // if (executor != null) {
+          //  executor.accept(this); // Exécute la méthode de Instruction
+       // } else {
+         //   throw new IllegalArgumentException(
+              //      "Opcode non implémenté / invalide : $"
+                     //       + String.format("%02X", opcode)
+                       //     + " à l’adresse : "
+                         //   + String.format("$%04X", initialPC)
+            //);
+       // }
+    //}
+
+
+
+
     public void step() {
         if (executionMap.isEmpty() || memoire == null) {
-            throw new IllegalStateException(
-                    "CPU non configurée ou table d’exécution vide."
-            );
+            throw new IllegalStateException("CPU non configurada.");
         }
 
         int initialPC = getPC();
-        int opcode = fetchByte(); // 1. FETCH (lit l’opcode et avance le PC)
+        int opcode = fetchByte(); // Lê o primeiro byte
 
-        // 2. DECODE & EXECUTE
+        // SEGREDO: Se for um prefixo ($10 ou $11), precisamos ler o próximo byte para formar o opcode real
+        if (opcode == 0x10 || opcode == 0x11) {
+            int prefix = opcode;
+            int secondByte = fetchByte();
+            opcode = (prefix << 8) | secondByte; // Ex: vira 0x108E
+        }
+
         Consumer<RegistreCPU> executor = executionMap.get(opcode);
 
         if (executor != null) {
-            executor.accept(this); // Exécute la méthode de Instruction
+            executor.accept(this);
         } else {
-            throw new IllegalArgumentException(
-                    "Opcode non implémenté / invalide : $"
-                            + String.format("%02X", opcode)
-                            + " à l’adresse : "
-                            + String.format("$%04X", initialPC)
-            );
+            throw new IllegalArgumentException("Opcode inválido: $" + String.format("%02X", opcode));
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ------------------------------------
     // GETTERS, SETTERS ET FIRE PROPERTY CHANGE
@@ -157,7 +203,7 @@ public class RegistreCPU {
     public void setX(int x) {
         int old = X;
         X = x & 0xFFFF;
-        pcs.firePropertyChange("X", old, X);
+        pcs.firePropertyChange("X", -1, X);
     }
 
     public int getY() {
