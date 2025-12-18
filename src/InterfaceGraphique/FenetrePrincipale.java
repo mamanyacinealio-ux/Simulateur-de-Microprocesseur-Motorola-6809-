@@ -272,6 +272,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         pas.setToolTipText("Pas à pas");
 
 
+
         ImageIcon iconreset = new ImageIcon(
                 new ImageIcon("C:/Image/reset.png")
                         .getImage()

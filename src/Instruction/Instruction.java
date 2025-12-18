@@ -20,6 +20,7 @@ public class Instruction {
         opcodeDetails.put("LDAIMMEDIAT", "86_2");
         opcodeDetails.put("LDBIMMEDIAT", "C6_2");
         opcodeDetails.put("ABXINHERENT", "3A_1");
+        opcodeDetails.put("STADIRECT", "97_2");
         // Ajouter d'autres opcodes ici...
     }
 
@@ -86,6 +87,11 @@ public class Instruction {
         int adress = registres.getEffectiveAdressEtendu();
         int data = memoire.read(adress) & 0xFF;
         registres.setA(data);
+    }
+    //STA
+    public void STA_DIRECT() {
+        int adresse = registres.getEffectiveAdressDirect();
+        memoire.write(adresse, (byte) registres.getA());
     }
 
     // [Ajouter toutes les autres méthodes d’instruction...]
