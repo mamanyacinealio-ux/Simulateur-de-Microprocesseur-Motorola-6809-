@@ -20,6 +20,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private RegistreCPU registrecpu;
     private Instruction I;
     private FenetreROM ROM;
+    private FenetreRAM RAM;
     public FenetrePrincipale(RegistreCPU registrecpu,Memoire m,Instruction I ) {
         //FENETRE PRINCIPALE
         this.registrecpu=registrecpu;
@@ -44,7 +45,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition=new FenetreEdition(registrecpu,m,I,ROM);
+                FenetreEdition fenetreEdition=new FenetreEdition(registrecpu,m,I,ROM,RAM);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -214,7 +215,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Nouveau1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM);
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM,RAM);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -258,7 +259,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         editeur.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM);
+                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM,RAM);
                 fenetreEdition.setVisible(true);
             }
         });
@@ -395,12 +396,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
     private void ouvrirFenetreRAM() {
         FenetreRAM ram = new FenetreRAM(this.m);
+        if (RAM !=null) RAM.atualiseTableaux();
+
         ram.setVisible(true);
 
     }
 
     private void ouvrirFenetreROM() {
         FenetreROM rom = new FenetreROM(this.m);
+        if (ROM !=null) ROM.atualiseTableau();
         rom.setVisible(true);
 
     }
