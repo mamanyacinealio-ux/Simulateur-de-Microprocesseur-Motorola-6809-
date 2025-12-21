@@ -14,219 +14,254 @@ public class FenetreEdition extends JFrame {
     private RegistreCPU registres;
     private Instruction instruction;
     private FenetreROM ROM;
+    private FenetreRAM RAM;
 
-    // Adresse de début de votre code (0xFC00 de la Logique)
     private static final int START_ADDRESS = 0xFC00;
 
-    public FenetreEdition(RegistreCPU registrecpu, Memoire memoire, Instruction instruction, FenetreROM rom) {
+    public FenetreEdition(RegistreCPU registrecpu, Memoire memoire,
+                          Instruction instruction, FenetreROM rom, FenetreRAM ram) {
+
         this.registres = registrecpu;
         this.memoire = memoire;
-        this.instruction = instruction; // Utilisé pour accéder aux cartes statiques
+        this.instruction = instruction;
         this.ROM = rom;
+        this.RAM = ram;
 
-        // --- Configuration de la fenêtre ---
         setTitle("Édition & Assembleur");
-
-        // CONFIGURATION DE LA TAILLE ET DE LA POSITION (Correction)
-        setBounds(600, 140, 400, 500); // Exemple : Position (600, 140), Taille (400x500)
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Ferme uniquement cette fenêtre
-
+        setBounds(600, 140, 400, 500);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         JMenuBar barre = new JMenuBar();
         add(barre, BorderLayout.NORTH);
 
-        // --- BOUTONS DE CONTRÔLE (LOAD et STEP) ---
         setupControlButtons(barre);
 
-        // [Vous pouvez ajouter BRECHERCHE, BAIDE, BQUITTER ici, si vous le souhaitez]
-
         zoneTexte = new JTextArea();
-        // Définir la police pour le code
         zoneTexte.setFont(new Font("Monospaced", Font.PLAIN, 14));
         zoneTexte.setLineWrap(true);
         zoneTexte.setWrapStyleWord(true);
 
-        // Ajoute la zone de texte dans un JScrollPane pour le défilement
         add(new JScrollPane(zoneTexte), BorderLayout.CENTER);
 
-        // Garantit que le PC initial soit affiché
-        if (registres != null) {
-            registres.setPC(START_ADDRESS);
-        }
+        registres.setPC(START_ADDRESS);
     }
 
     private void setupControlButtons(JMenuBar barre) {
-        // --- 1. BOUTON LOAD (Assembler et charger) ---
+
         JButton BLOAD = new JButton("LOAD");
         BLOAD.addActionListener(e -> assembleAndLoad());
         barre.add(BLOAD);
 
-        // --- 2. BOUTON STEP (Exécution pas à pas) ---
         JButton BSTEP = new JButton("STEP");
         BSTEP.addActionListener(e -> {
             try {
                 registres.step();
-            } catch (IllegalStateException ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Erreur : CPU non initialisée. Cliquez sur LOAD.",
-                        "Erreur",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        ex.getMessage(),
-                        "Erreur d’Opcode",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                if (RAM != null) RAM.atualiseTableaux();
+                if (ROM != null) ROM.atualiseTableau();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Erreur d’exécution : " + ex.getMessage(),
-                        "Erreur",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                JOptionPane.showMessageDialog(this,
+                        ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         });
         barre.add(BSTEP);
     }
 
-    // ------------------------------------
-    // LOGIQUE DE L’ASSEMBLEUR (migrée de la Logique)
-    // ------------------------------------
-
     public String getCode() {
         return zoneTexte.getText();
     }
 
-    // Méthode decode de votre Logique (détermine le mode d’adressage)
-    public String decode(String m) {
-        // Correction : permet de traiter un opérande vide ou null comme INHERENT
-        if (m == null || m.isEmpty() || m.trim().isEmpty()) return "INHERENT";
+    public String decode(String inst, String m) {
 
-        String trimmedM = m.trim();
+        if (m == null || m.trim().isEmpty()) return "INHERENT";
 
-        if (trimmedM.startsWith("#$") && trimmedM.length() == 4) return "IMMEDIAT";
-        else if (trimmedM.startsWith("$") && trimmedM.length() == 5) return "ETENDU";
-        else if (trimmedM.startsWith("<") && trimmedM.length() == 6) return "DIRECT";
-        else if (trimmedM.startsWith("[") && trimmedM.endsWith("]") && trimmedM.length() == 7)
-            return "ETENDU INDIRECT";
-        else return "FALSE";
+        String op = m.trim();
+
+        if (op.startsWith("#$")) {
+            if (is16BitInstruction(inst))
+                return (op.length() == 6) ? "IMMEDIAT" : "FALSE";
+            else
+                return (op.length() == 4) ? "IMMEDIAT" : "FALSE";
+        }
+
+        if (op.startsWith("$") && op.length() == 5) return "ETENDU";
+        if (op.startsWith("<") && op.length() == 3) return "DIRECT";
+        if (op.startsWith("[") && op.endsWith("]")) return "ETENDU INDIRECT";
+
+        return "FALSE";
     }
 
-    // Méthode principale qui remplace progMemoire (Chaîne → Octets → Mémoire)
+    // =====================================================
+    // ASSEMBLEUR CORRIGÉ
+    // =====================================================
     public void assembleAndLoad() {
+
         String prog = getCode().toUpperCase();
-        int adr = START_ADDRESS;
         String[] lignes = prog.split("\\R");
+        int adr = START_ADDRESS;
 
         try {
-            registres.reset(); // Réinitialisation du PC et des registres
+            registres.reset();
 
             for (String ligne : lignes) {
-                String cleanLigne = ligne.trim();
-                if (cleanLigne.isBlank() || cleanLigne.startsWith(";") || cleanLigne.equals("END")) break;
 
-                String[] mot = cleanLigne.split("\\s+", 2);
-                String instructionName = mot[0];
-                String operando = (mot.length > 1) ? mot[1].trim() : "";
+                String clean = ligne.trim();
+                if (clean.isEmpty() || clean.startsWith(";") || clean.equals("END"))
+                    break;
 
-                String mode = decode(operando);
-                if ("FALSE".equals(mode))
-                    throw new Exception("Mode d’adressage invalide : " + operando);
+                String[] parts = clean.split("\\s+", 2);
+                String inst = parts[0];
+                String operande = (parts.length > 1) ? parts[1] : "";
 
-                // Récupère l’Opcode (dans Instruction.opcodeDetails)
-                String opcodeStr = instruction.opcode(instructionName, mode);
+                String mode = decode(inst, operande);
+                if (mode.equals("FALSE"))
+                    throw new Exception("Mode invalide : " + operande);
+
+                String opcodeStr = instruction.opcode(inst, mode);
                 if (opcodeStr == null)
-                    throw new Exception("Instruction ou mode non supporté : "
-                            + instructionName + " " + mode);
+                    throw new Exception("Instruction non supportée : " + inst);
 
                 int opcode = Integer.parseInt(
                         opcodeStr.substring(0, opcodeStr.length() - 2), 16);
-                int nbOctect = Integer.parseInt(
+                int nbOctet = Integer.parseInt(
                         opcodeStr.substring(opcodeStr.length() - 1));
 
-                // 1. Écrit l’Opcode
-                memoire.write(adr, (byte) opcode);
+                // -------- ÉCRITURE OPCODE --------
+                int offset;
+                if (opcode <= 0xFF) {
+                    memoire.write(adr, (byte) (opcode & 0xFF));
+                    offset = 1;
+                } else {
+                    memoire.write(adr,     (byte) ((opcode >> 8) & 0xFF));
+                    memoire.write(adr + 1, (byte) (opcode & 0xFF));
+                    offset = 2;
+                }
 
+                // -------- ÉCRITURE OPÉRANDE --------
+                if (nbOctet > offset) {
 
-                // 2. Écrit les opérandes (immédiat uniquement, pour simplification)
-               // if (nbOctect == 2) {
-                 //   if ("IMMEDIAT".equals(mode)) {
-                        // Exemple : '#$10' → '10'
-                  //      String valHex = operando.substring(2);
-                     //   int valByte = Integer.parseInt(valHex, 16);
-                    //    memoire.write(adr, (byte) valByte);
-                     //   adr++;
-                   // }
-                    // Ajouter ici la logique pour les opérandes 16 bits ou
-                    // d’autres modes (ETENDU, etc.)
-               // }
-
-
-
-
-// 2. Escreve os operandos baseados no tamanho total da instrução
-                if (nbOctect > 1) {
-                    // Limpa caracteres especiais para pegar apenas o número hex
-                    String valHex = operando.replaceAll("[#$<>\\s\\[\\]]", "");
+                    String valHex = operande.replaceAll("[#$<>\\[\\]\\s]", "");
                     if (valHex.contains(",")) valHex = valHex.split(",")[0];
 
                     int val = Integer.parseInt(valHex, 16);
+                    int tailleOperande = nbOctet - offset;
 
-                    if (nbOctect == 2) {
-                        // Ex: LDA #$10 -> Grava 1 byte
-                        memoire.write(adr + 1, (byte) (val & 0xFF));
-                    }
-                    else if (nbOctect == 3) {
-                        // Ex: LDX #$1234 -> Grava 2 bytes (High e Low)
-                        memoire.write(adr + 1, (byte) (val >> 8));   // Byte mais significativo
-                        memoire.write(adr + 2, (byte) (val & 0xFF)); // Byte menos significativo
-                    }
-                    else if (nbOctect == 4) {
-                        // Ex: LDY #$1234 (Prefixo 10 + 8E + 2 bytes)
-                        // Como o prefixo já foi tratado no fetch do Step,
-                        // aqui você precisa garantir que grava os dados na posição correta.
-                        memoire.write(adr + 2, (byte) (val >> 8));
-                        memoire.write(adr + 3, (byte) (val & 0xFF));
+                    if (tailleOperande == 1) {
+                        memoire.write(adr + offset, (byte) (val & 0xFF));
+                    } else if (tailleOperande == 2) {
+                        memoire.write(adr + offset,     (byte) ((val >> 8) & 0xFF));
+                        memoire.write(adr + offset + 1, (byte) (val & 0xFF));
                     }
                 }
 
-                adr += nbOctect; // Avança o endereço para a próxima instrução
-
-
-
-
-
-
-
-
-
-
-                // Remarque : pour les instructions de 3 octets (ETENDU),
-                // vous devrez avancer 'adr' encore une fois ici.
+                adr += nbOctet;
             }
 
             registres.setPC(START_ADDRESS);
-            if (ROM != null) {
-                ROM.atualiseTableaux();
-            }
+            if (ROM != null) ROM.atualiseTableau();
+            if (RAM != null) RAM.atualiseTableaux();
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Programme chargé à partir de "
-                            + String.format("$%04X", START_ADDRESS)
-            );
+            JOptionPane.showMessageDialog(this,
+                    "Programme chargé à partir de $" +
+                            String.format("%04X", START_ADDRESS));
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this,
+            JOptionPane.showMessageDialog(this,
                     "Erreur d’assemblage : " + ex.getMessage(),
-                    "Erreur",
-                    JOptionPane.ERROR_MESSAGE
-            );
+                    "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private boolean is16BitInstruction(String inst) {
+        return inst.equals("LDX") || inst.equals("LDY") ||
+                inst.equals("LDD") || inst.equals("LDS") ||
+                inst.equals("LDU") || inst.equals("CMPX") ||
+                inst.equals("CMPY");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

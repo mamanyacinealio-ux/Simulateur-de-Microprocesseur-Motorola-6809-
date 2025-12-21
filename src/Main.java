@@ -1,11 +1,8 @@
 
 
 import CPU.RegistreCPU;
-import InterfaceGraphique.FenetreROM;
+import InterfaceGraphique.*;
 import Memoire.Memoire;
-import InterfaceGraphique.FenetreCPU;
-import InterfaceGraphique.FenetreEdition;
-import InterfaceGraphique.FenetrePrincipale;
 import Instruction.Instruction;
 import javax.swing.SwingUtilities;
 
@@ -28,7 +25,10 @@ public class Main {
             instruction.setRegistreCPU(rcpu);
 
             FenetreROM ROM=new FenetreROM(m);
-            FenetreEdition f = new FenetreEdition(rcpu, m, instruction,ROM);
+
+            FenetreRAM RAM=new FenetreRAM(m);
+            RAM.setVisible(true);
+            FenetreEdition f = new FenetreEdition(rcpu, m, instruction,ROM,RAM);
 
             FenetreCPU h = new FenetreCPU(rcpu);
 

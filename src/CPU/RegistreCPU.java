@@ -32,6 +32,25 @@ public class RegistreCPU {
 
         // Exemple d’opcodes listés dans la Logique (86_2, C6_2, 3A_1) :
 
+        //END
+        executionMap.put(0x00, r -> instruction.STOP_PROGRAM());
+
+//pour simuler le charfement de DP
+        executionMap.put(0x1F, r -> instruction.LDDP_IMMEDIAT());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Opcode 0x86 : LDA Immédiat
         executionMap.put(0x86, r -> instruction.LDA_IMMEDIATE());
 
@@ -45,10 +64,64 @@ public class RegistreCPU {
         // Opcode 0x108E : LDY Immédiat
         executionMap.put(0x108E, r -> instruction.LDY_IMMEDIATE());
 
+        //Opcode 0x10CE : LDS Immédiat
+        executionMap.put(0x10CE, r -> instruction.LDS_IMMEDIATE() );
+
+
+        //Opcode 0xCE : LDU Immédiat
+        executionMap.put(0xCE, r -> instruction.LDU_IMMEDIATE() );
+
         // Opcode 0x3A : ABX Inhérent
         executionMap.put(0x3A, r -> instruction.ABX_INHERENT());
         //opcode 0X97 : STA direct
         executionMap.put(0x97, r -> instruction.STA_DIRECT());
+
+
+
+        //Opcode 0x96 :LDA direct
+        executionMap.put(0x96, r -> instruction.LDA_DIRECT());
+        executionMap.put(0xD6, r -> instruction.LDB_DIRECT());
+        executionMap.put(0x10DE, r -> instruction.LDS_DIRECT());
+        executionMap.put(0xDE, r -> instruction.LDU_DIRECT());
+        executionMap.put(0x9E, r -> instruction.LDX_DIRECT());
+        executionMap.put(0x109E, r -> instruction.LDY_DIRECT());
+
+        //ETEMDU
+
+        executionMap.put(0xB6, r -> instruction.LDA_ETENDU());
+        executionMap.put(0xF6, r -> instruction.LDB_ETENDU());
+        executionMap.put(0x10FE, r -> instruction.LDS_ETENDU());
+        executionMap.put(0xFE, r -> instruction.LDU_ETENDU());
+        executionMap.put(0xBE, r -> instruction.LDX_ETENDU());
+        executionMap.put(0x10BE, r -> instruction.LDY_ETENDU());
+
+
+
+
+
+
+
+
+
+
+
+        executionMap.put(0x97, r -> instruction.STA_DIRECT());
+        executionMap.put(0xD7, r -> instruction.STB_DIRECT());
+
+        executionMap.put(0x10DF, r -> instruction.STS_DIRECT());
+        executionMap.put(0xDF, r -> instruction.STU_DIRECT());
+        executionMap.put(0x9F, r -> instruction.STX_DIRECT());
+        executionMap.put(0x109F, r -> instruction.STY_DIRECT());
+
+
+
+//ADD IMMEDIAT
+        executionMap.put(0x8B, r -> instruction.ADDA_IMMEDIAT());
+
+//CMPA
+        executionMap.put(0x81, r -> instruction.CMPA_IMMEDIATE());
+        executionMap.put(0x8C, r -> instruction.CMPX_IMMEDIATE());
+
 
 
         // Ajouter tous les autres opcodes ici

@@ -437,6 +437,8 @@ public class FenetreCPU extends JFrame {
         champX.setText(String.format("%04X", registreCPU.getX()));
         champY.setText(String.format("%04X", registreCPU.getY()));
         champU.setText(String.format("%04X", registreCPU.getU()));
+        champS.setText(String.format("%04X", registreCPU.getS()));
+        champDP.setText(String.format("%04X", registreCPU.getDP()));
 
 
         // Adicione os outros conforme necessário...
