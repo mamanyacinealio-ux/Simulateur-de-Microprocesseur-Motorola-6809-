@@ -66,13 +66,20 @@ public class FenetreEdition extends JFrame {
         });
         barre.add(BSTEP);
     }
+    //methode pour mettre  à jour le champ d'édition
+    public void setCode(String texte) {
+        zoneTexte.setText(texte);
+    }
 
     public String getCode() {
         return zoneTexte.getText();
     }
 
     public String decode(String inst, String m) {
-
+        if (inst.equals("PSHS") || inst.equals("PSHU") ||
+                inst.equals("PULS") || inst.equals("PULU")) {
+            return "IMMEDIAT";
+        }
         if (m == null || m.trim().isEmpty()) return "INHERENT";
 
         String op = m.trim();
@@ -91,9 +98,9 @@ public class FenetreEdition extends JFrame {
         return "FALSE";
     }
 
-    // =====================================================
+
     // ASSEMBLEUR CORRIGÉ
-    // =====================================================
+
     public void assembleAndLoad() {
 
         String prog = getCode().toUpperCase();
@@ -139,11 +146,19 @@ public class FenetreEdition extends JFrame {
 
                 // -------- ÉCRITURE OPÉRANDE --------
                 if (nbOctet > offset) {
+                    int val;
 
-                    String valHex = operande.replaceAll("[#$<>\\[\\]\\s]", "");
-                    if (valHex.contains(",")) valHex = valHex.split(",")[0];
+                    if (inst.equals("PSHS") || inst.equals("PSHU") ||
+                            inst.equals("PULS") || inst.equals("PULU")) {
 
-                    int val = Integer.parseInt(valHex, 16);
+                        val = instruction.calculerPostOctetPSH_PUL(operande);
+
+                    } else {
+                        String valHex = operande.replaceAll("[#$<>\\[\\]\\s]", "");
+                        if (valHex.contains(",")) valHex = valHex.split(",")[0];
+                        val = Integer.parseInt(valHex, 16);
+                    }
+
                     int tailleOperande = nbOctet - offset;
 
                     if (tailleOperande == 1) {
@@ -153,6 +168,7 @@ public class FenetreEdition extends JFrame {
                         memoire.write(adr + offset + 1, (byte) (val & 0xFF));
                     }
                 }
+
 
                 adr += nbOctet;
             }

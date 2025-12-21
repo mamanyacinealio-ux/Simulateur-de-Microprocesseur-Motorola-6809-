@@ -3,10 +3,11 @@ import Instruction.Instruction;
 import Memoire.Memoire;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.io.IOException;
 import javax.swing.JFrame;
-
 import CPU.RegistreCPU;
-
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
@@ -50,17 +51,73 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             }
         });
         JMenuItem Ouvrir = new JMenuItem("Ouvrir");
+        //ouvrir un fichier en mémoire
         Ouvrir.addActionListener(e -> {
+
             JFileChooser fileChooser = new JFileChooser();
             int result = fileChooser.showOpenDialog(FenetrePrincipale.this);
 
             if (result == JFileChooser.APPROVE_OPTION) {
-                File fichierSelectionne = fileChooser.getSelectedFile();
-                JOptionPane.showMessageDialog(FenetrePrincipale.this,
-                        "Fichier sélectionné : " + fichierSelectionne.getAbsolutePath());
+                File fichier = fileChooser.getSelectedFile();
+
+                try {
+                    // Lire tout le fichier
+                    String contenu = Files.readString(fichier.toPath());
+
+                    // Ouvrir la fenêtre d’édition
+                    FenetreEdition fenetreEdition =
+                            new FenetreEdition(registrecpu, m, I, ROM, RAM);
+
+                    // Mettre le texte dans la zone
+                    fenetreEdition.setCode(contenu);
+
+                    fenetreEdition.setVisible(true);
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(
+                            FenetrePrincipale.this,
+                            "Erreur de lecture du fichier",
+                            "Erreur",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
         });
         JMenuItem Enregister = new JMenuItem("Enregister");
+        //enregister un fichier en mémoire
+        Enregister.addActionListener(e -> {
+
+            // Ouvrir la fenêtre d’édition
+            FenetreEdition fenetreEdition =
+                    new FenetreEdition(registrecpu, m, I, ROM, RAM);
+
+            // Choisir où enregistrer
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(FenetrePrincipale.this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File fichier = fileChooser.getSelectedFile();
+
+                try {
+                    // Récupérer le texte
+                    String texte = fenetreEdition.getCode();
+
+                    // Écrire dans le fichier
+                    Files.writeString(fichier.toPath(), texte);
+
+
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(
+                            FenetrePrincipale.this,
+                            "Erreur lors de l’enregistrement",
+                            "Erreur",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
+
         JMenuItem Enregister_sous = new JMenuItem("Enregister sous");
         JMenuItem Assembler = new JMenuItem("Assembler");
         JMenuItem Imprimer = new JMenuItem("Imprimer");
@@ -227,15 +284,36 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         );
         JButton ouvrir1 = new JButton(iconnew);
         ouvrir1.setToolTipText("Ouvrir fichier");
-
+        //ouvrir un fichier en mémoire
         ouvrir1.addActionListener(e -> {
-            JFileChooser t = new JFileChooser();
-            int result = t.showOpenDialog(FenetrePrincipale.this);
+
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(FenetrePrincipale.this);
 
             if (result == JFileChooser.APPROVE_OPTION) {
-                File fichierSelectionne = t.getSelectedFile();
-                JOptionPane.showMessageDialog(FenetrePrincipale.this,
-                        "Fichier sélectionné : " + fichierSelectionne.getAbsolutePath());
+                File fichier = fileChooser.getSelectedFile();
+
+                try {
+                    // Lire tout le fichier
+                    String contenu = Files.readString(fichier.toPath());
+
+                    // Ouvrir la fenêtre d’édition
+                    FenetreEdition fenetreEdition =
+                            new FenetreEdition(registrecpu, m, I, ROM, RAM);
+
+                    // Mettre le texte dans la zone
+                    fenetreEdition.setCode(contenu);
+
+                    fenetreEdition.setVisible(true);
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(
+                            FenetrePrincipale.this,
+                            "Erreur de lecture du fichier",
+                            "Erreur",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
         });
 
@@ -247,6 +325,36 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         );
         JButton sauver = new JButton(iconsauver);
         sauver.setToolTipText("Sauvergarder");
+       //enregister un fichier en mémoire
+        sauver.addActionListener(e -> {
+
+            FenetreEdition fenetreEdition =
+                    new FenetreEdition(registrecpu, m, I, ROM, RAM);
+
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(FenetrePrincipale.this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File fichier = fileChooser.getSelectedFile();
+
+                try {
+
+                    String texte = fenetreEdition.getCode();
+
+                    Files.writeString(fichier.toPath(), texte);
+
+
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(
+                            FenetrePrincipale.this,
+                            "Erreur lors de l’enregistrement",
+                            "Erreur",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
+
 
 
         ImageIcon iconediteur = new ImageIcon(
@@ -333,8 +441,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         JButton imprimer = new JButton(iconimprimer);
         imprimer.setToolTipText("Imprimer");
 
-
-        // Attribut de la classe pour pouvoir le modifier depuis les boutons
 
 
         // Label pour afficher la vitesse

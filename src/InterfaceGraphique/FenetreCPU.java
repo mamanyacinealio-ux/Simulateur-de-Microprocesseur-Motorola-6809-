@@ -462,25 +462,66 @@ public class FenetreCPU extends JFrame {
         add(l);
     }
 
-    // Classe interna da UAL
+    // Classe interne de la UAL
     class UALShape extends JPanel {
+
         public UALShape() {
             setOpaque(false);
-            setBounds(80, 165, 200, 100);
+            setBounds(80, 148, 230, 135); // taille adaptée à la forme
         }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+
             Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setStroke(new BasicStroke(3));
-            g2.setColor(Color.WHITE);
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+
+            int w = getWidth();
+            int h = getHeight();
+
+            // ===== Forme UAL (exactement comme ton dessin) =====
             Polygon p = new Polygon();
-            p.addPoint(10, 10); p.addPoint(180, 10); p.addPoint(180, 90);
-            p.addPoint(10, 90); p.addPoint(40, 50); p.addPoint(10, 10);
+
+            p.addPoint(20, 10);
+            p.addPoint(w - 15, 20);
+            p.addPoint(w - 15, h - 15);
+            p.addPoint(25, h - 10);
+            p.addPoint(25, h - 45);
+            p.addPoint(65, h / 2);
+            p.addPoint(25, 45);
+
+            // ===== Remplissage gris =====
+            g2.setColor(new Color(210, 210, 210));
+            g2.fillPolygon(p);
+
+            // ===== Contour noir =====
+            g2.setStroke(new BasicStroke(3));
+            g2.setColor(Color.BLACK);
             g2.drawPolygon(p);
-            g2.setFont(new Font("Arial", Font.BOLD, 28));
-            g2.drawString("UAL", 75, 65);
+
+            // ===== Texte "UAL" centré =====
+            g2.setFont(new Font("Arial", Font.BOLD, 36));
+            FontMetrics fm = g2.getFontMetrics();
+
+            String txt = "UAL";
+            int tx = (w - fm.stringWidth(txt)) / 2 + 20;
+            int ty = (h + fm.getAscent()) / 2 - 8;
+
+            g2.drawString(txt, tx, ty);
+            g.drawLine(7, 20, 20, 20);
+            g.drawLine(7, 120, 22, 120);
+
+
+
+
+
+
+
+
+
         }
     }
+
 }
