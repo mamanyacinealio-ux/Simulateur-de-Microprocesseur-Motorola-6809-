@@ -18,7 +18,7 @@ public class Syntaxe {
     private FenetreEdition fenetre;
     public Syntaxe(FenetreEdition f) {
         this.fenetre = f;
-        // String code = fenetre.getCode();
+
 
     }
 
@@ -27,7 +27,6 @@ public class Syntaxe {
 
         if (ligne.isEmpty() || ligne.startsWith(";")) return true;
 
-        // END é permitido e não tem operando
         if (ligne.equals("END")) return true;
 
         String[] partie = ligne.split("\\s+", 2);
@@ -63,8 +62,6 @@ public class Syntaxe {
         System.out.println("Erro: operande inválide -> " + operande);
         return false;
     }
-
-
 
 
     public static boolean VerifierCode(String code) {

@@ -293,14 +293,15 @@ public class FenetreCPU extends JFrame {
     public FenetreCPU(RegistreCPU registreCPU) {
         this.registreCPU = registreCPU;
 
-        // Configuração da Janela
+
         setTitle("Architecture interne du 6809");
         setBounds(10, 140, 320, 550);
         getContentPane().setBackground(Color.DARK_GRAY);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
-        // --- Registrador PC ---
+
+        //PC
         JLabel labelPC = new JLabel("PC");
         labelPC.setForeground(Color.WHITE);
         labelPC.setFont(new Font("Arial", Font.BOLD, 20));
@@ -310,11 +311,11 @@ public class FenetreCPU extends JFrame {
         champPC = crearChamp(80, 10, 100, 30);
         add(champPC);
 
-        // --- Registrador D (A:B) ---
+        // A B
         champTexte2 = crearChamp(20, 50, 260, 30);
         add(champTexte2);
 
-        // --- Registradores S e U ---
+        // S U
         crearLabel("S", 10, 100, 30);
         champS = crearChamp(35, 100, 90, 30);
         add(champS);
@@ -332,7 +333,8 @@ public class FenetreCPU extends JFrame {
         champB = crearChamp(35, 250, 50, 30);
         add(champB);
 
-        // --- Registrador DP e Hex das Flags ---
+
+        //R FLAGS
         crearLabel("DP", 5, 300, 30);
         champDP = crearChamp(50, 300, 50, 30);
         add(champDP);
@@ -340,10 +342,10 @@ public class FenetreCPU extends JFrame {
         champflags = crearChamp(140, 300, 130, 30);
         add(champflags);
 
-        // --- CRIAÇÃO DAS FLAGS INDIVIDUAIS (E F H I N Z V C) ---
+
         setupFlagsUI();
 
-        // --- Registradores X e Y ---
+        // X e Y
         crearLabel("X", 10, 420, 30);
         champX = crearChamp(35, 420, 100, 30);
         add(champX);
@@ -352,17 +354,17 @@ public class FenetreCPU extends JFrame {
         champY = crearChamp(180, 420, 100, 30);
         add(champY);
 
-        // Desenho da UAL
+
         UALShape ual = new UALShape();
         add(ual);
 
-        // Conectar eventos
+
         bindRegisters();
 
         setVisible(true);
     }
 
-    // Método para configurar as letras das flags individualmente
+
     private void setupFlagsUI() {
         int x = 145;
         int y = 335;
@@ -419,7 +421,7 @@ public class FenetreCPU extends JFrame {
             }
         });
 
-        // Atualização inicial (forçar valores atuais)
+        //ACTUALISER
         refreshAllFields();
     }
 
@@ -441,10 +443,10 @@ public class FenetreCPU extends JFrame {
         champDP.setText(String.format("%04X", registreCPU.getDP()));
 
 
-        // Adicione os outros conforme necessário...
+
     }
 
-    // Métodos utilitários de UI
+    //Métodos utilitários de UI
     private JTextField crearChamp(int x, int y, int w, int h) {
         JTextField tf = new JTextField();
         tf.setBounds(x, y, w, h);
@@ -462,7 +464,7 @@ public class FenetreCPU extends JFrame {
         add(l);
     }
 
-    // Classe interne de la UAL
+    //Classe UAL
     class UALShape extends JPanel {
 
         public UALShape() {
@@ -481,7 +483,6 @@ public class FenetreCPU extends JFrame {
             int w = getWidth();
             int h = getHeight();
 
-            // ===== Forme UAL (exactement comme ton dessin) =====
             Polygon p = new Polygon();
 
             p.addPoint(20, 10);
@@ -492,16 +493,16 @@ public class FenetreCPU extends JFrame {
             p.addPoint(65, h / 2);
             p.addPoint(25, 45);
 
-            // ===== Remplissage gris =====
+            //COULEUR
             g2.setColor(new Color(210, 210, 210));
             g2.fillPolygon(p);
 
-            // ===== Contour noir =====
+            //CONTOUR
             g2.setStroke(new BasicStroke(3));
             g2.setColor(Color.BLACK);
             g2.drawPolygon(p);
 
-            // ===== Texte "UAL" centré =====
+            //TEXTE UAL
             g2.setFont(new Font("Arial", Font.BOLD, 36));
             FontMetrics fm = g2.getFontMetrics();
 
@@ -512,6 +513,7 @@ public class FenetreCPU extends JFrame {
             g2.drawString(txt, tx, ty);
             g.drawLine(7, 20, 20, 20);
             g.drawLine(7, 120, 22, 120);
+            g2.drawLine(120, 130, 120, 400);
 
 
 

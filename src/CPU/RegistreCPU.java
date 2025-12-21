@@ -10,72 +10,39 @@ import java.util.function.Consumer;
 
 public class RegistreCPU {
 
-    // Registres du 6809
+    //Registres du 6809
     private int A, B, X, Y, U, S, PC, CC, DP;
 
     private Memoire memoire;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-    // Carte d’exécution : associe un Opcode (byte) à la logique d’exécution
-    // (méthodes définies dans la classe Instruction).
+
+    //méthodes classe Instruction
     public final Map<Integer, Consumer<RegistreCPU>> executionMap = new HashMap<>();
 
-    // Constructeur principal : injecte les dépendances et configure la table des opcodes.
+    //Constructeur principal
     public RegistreCPU(Memoire memoire, Instruction instruction) {
         this.memoire = memoire;
         reset();
 
-        // --- Configuration automatique de executionMap ---
-        // Ici, nous associons les opcodes aux méthodes de la classe Instruction.
-        // Les opcodes sont obtenus à partir de la carte statique
-        // Instruction.opcodeDetails.
-
-        // Exemple d’opcodes listés dans la Logique (86_2, C6_2, 3A_1) :
-
         //END
         executionMap.put(0x00, r -> instruction.STOP_PROGRAM());
-
-//pour simuler le charfement de DP
+        //pour simuler le charfement de DP
         executionMap.put(0x1F, r -> instruction.LDDP_IMMEDIAT());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // Opcode 0x86 : LDA Immédiat
+        //Opcode 0x86 : LDA Immédiat
         executionMap.put(0x86, r -> instruction.LDA_IMMEDIATE());
-
-        // Opcode 0xC6 : LDB Immédiat
+        //Opcode 0xC6 : LDB Immédiat
         executionMap.put(0xC6, r -> instruction.LDB_IMMEDIATE());
-
-        // Opcode 0x8E : LDX Immédiat
+        //Opcode 0x8E : LDX Immédiat
         executionMap.put(0x8E, r -> instruction.LDX_IMMEDIATE());
-
-
-        // Opcode 0x108E : LDY Immédiat
+        //Opcode 0x108E : LDY Immédiat
         executionMap.put(0x108E, r -> instruction.LDY_IMMEDIATE());
-
         //Opcode 0x10CE : LDS Immédiat
         executionMap.put(0x10CE, r -> instruction.LDS_IMMEDIATE() );
-
-
         //Opcode 0xCE : LDU Immédiat
         executionMap.put(0xCE, r -> instruction.LDU_IMMEDIATE() );
-
         // Opcode 0x3A : ABX Inhérent
         executionMap.put(0x3A, r -> instruction.ABX_INHERENT());
-
-
-
         //Opcode 0x96 :LDA direct
         executionMap.put(0x96, r -> instruction.LDA_DIRECT());
         executionMap.put(0xD6, r -> instruction.LDB_DIRECT());
@@ -83,50 +50,35 @@ public class RegistreCPU {
         executionMap.put(0xDE, r -> instruction.LDU_DIRECT());
         executionMap.put(0x9E, r -> instruction.LDX_DIRECT());
         executionMap.put(0x109E, r -> instruction.LDY_DIRECT());
-
         //ETEMDU
-
         executionMap.put(0xB6, r -> instruction.LDA_ETENDU());
         executionMap.put(0xF6, r -> instruction.LDB_ETENDU());
         executionMap.put(0x10FE, r -> instruction.LDS_ETENDU());
         executionMap.put(0xFE, r -> instruction.LDU_ETENDU());
         executionMap.put(0xBE, r -> instruction.LDX_ETENDU());
         executionMap.put(0x10BE, r -> instruction.LDY_ETENDU());
-
-
-
-
-
-
-
-
-
-
-
         executionMap.put(0x97, r -> instruction.STA_DIRECT());
         executionMap.put(0xD7, r -> instruction.STB_DIRECT());
-
         executionMap.put(0x10DF, r -> instruction.STS_DIRECT());
         executionMap.put(0xDF, r -> instruction.STU_DIRECT());
         executionMap.put(0x9F, r -> instruction.STX_DIRECT());
         executionMap.put(0x109F, r -> instruction.STY_DIRECT());
-
-
-
-//ADD IMMEDIAT
+        //ADD IMMEDIAT
         executionMap.put(0x8B, r -> instruction.ADDA_IMMEDIAT());
-
-//CMPA
+        //CMPA
         executionMap.put(0x81, r -> instruction.CMPA_IMMEDIATE());
         executionMap.put(0x8C, r -> instruction.CMPX_IMMEDIATE());
+        //psh et pul
+        executionMap.put(0x34, r -> instruction.PSHS());
+        executionMap.put(0x35, r -> instruction.PULS());
+        executionMap.put(0x36, r -> instruction.PSHU());
+        executionMap.put(0x37, r -> instruction.PULU());
 
 
+        //ajouter tous les autres opcodes ici
 
-        // Ajouter tous les autres opcodes ici
-        // (ex : LDA_DIRECT, JMP_ETENDU, etc.)
     }
-
-    // Constructeur vide pour le Main (si nécessaire)
+    //Constructeur vide pour le Main (si nécessaire)
     public RegistreCPU() {
         this(null, null);
     }
@@ -135,10 +87,6 @@ public class RegistreCPU {
     // CYCLE D’EXÉCUTION
     // ------------------------------------
 
-    /**
-     * Lit un octet de la mémoire à l’adresse du PC et incrémente le PC.
-     * @return l’octet lu
-     */
     public int fetchByte() {
         if (memoire == null)
             throw new IllegalStateException("Mémoire non initialisée.");
@@ -168,32 +116,6 @@ public class RegistreCPU {
     /**
      * Exécute un seul cycle d’instruction (Fetch, Decode, Execute).
      */
-    //public void step() {
-      //  if (executionMap.isEmpty() || memoire == null) {
-          //  throw new IllegalStateException(
-             //       "CPU non configurée ou table d’exécution vide."
-           // );
-      //  }
-
-        //int initialPC = getPC();
-        //int opcode = fetchByte(); // 1. FETCH (lit l’opcode et avance le PC)
-
-        // 2. DECODE & EXECUTE
-       // Consumer<RegistreCPU> executor = executionMap.get(opcode);
-
-       // if (executor != null) {
-          //  executor.accept(this); // Exécute la méthode de Instruction
-       // } else {
-         //   throw new IllegalArgumentException(
-              //      "Opcode non implémenté / invalide : $"
-                     //       + String.format("%02X", opcode)
-                       //     + " à l’adresse : "
-                         //   + String.format("$%04X", initialPC)
-            //);
-       // }
-    //}
-
-
 
 
     public void step() {
@@ -219,18 +141,6 @@ public class RegistreCPU {
             throw new IllegalArgumentException("Opcode inválido: $" + String.format("%02X", opcode));
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

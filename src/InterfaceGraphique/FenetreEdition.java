@@ -47,6 +47,7 @@ public class FenetreEdition extends JFrame {
         registres.setPC(START_ADDRESS);
     }
 
+
     private void setupControlButtons(JMenuBar barre) {
 
         JButton BLOAD = new JButton("LOAD");
@@ -72,6 +73,10 @@ public class FenetreEdition extends JFrame {
     }
 
     public String decode(String inst, String m) {
+        if (inst.equals("PSHS") || inst.equals("PSHU") ||
+                inst.equals("PULS") || inst.equals("PULU")) {
+            return "IMMEDIAT";
+        }
 
         if (m == null || m.trim().isEmpty()) return "INHERENT";
 
@@ -91,9 +96,9 @@ public class FenetreEdition extends JFrame {
         return "FALSE";
     }
 
-    // =====================================================
+
     // ASSEMBLEUR CORRIGÉ
-    // =====================================================
+
     public void assembleAndLoad() {
 
         String prog = getCode().toUpperCase();
@@ -139,11 +144,19 @@ public class FenetreEdition extends JFrame {
 
                 // -------- ÉCRITURE OPÉRANDE --------
                 if (nbOctet > offset) {
+                    int val; // variable unique pour tous les cas
 
-                    String valHex = operande.replaceAll("[#$<>\\[\\]\\s]", "");
-                    if (valHex.contains(",")) valHex = valHex.split(",")[0];
+                    if (inst.equals("PSHS") || inst.equals("PSHU") ||
+                            inst.equals("PULS") || inst.equals("PULU")) {
 
-                    int val = Integer.parseInt(valHex, 16);
+                        val = instruction.calculerPostOctetPSH_PUL(operande);
+
+                    } else {
+                        String valHex = operande.replaceAll("[#$<>\\[\\]\\s]", "");
+                        if (valHex.contains(",")) valHex = valHex.split(",")[0];
+                        val = Integer.parseInt(valHex, 16);
+                    }
+
                     int tailleOperande = nbOctet - offset;
 
                     if (tailleOperande == 1) {
@@ -153,6 +166,7 @@ public class FenetreEdition extends JFrame {
                         memoire.write(adr + offset + 1, (byte) (val & 0xFF));
                     }
                 }
+
 
                 adr += nbOctet;
             }
@@ -179,89 +193,8 @@ public class FenetreEdition extends JFrame {
                 inst.equals("CMPY");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void setCode(String texte) {
+        zoneTexte.setText(texte);
+    }
 
 }

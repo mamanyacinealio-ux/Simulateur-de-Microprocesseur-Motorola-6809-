@@ -33,6 +33,11 @@ public class Instruction {
         opcodeDetails.put("LDYIMMEDIAT","108E_4");
         opcodeDetails.put("LDUIMMEDIAT","CE_3");
         opcodeDetails.put("LDSIMMEDIAT","10CE_4");
+        opcodeDetails.put("PSHSIMMEDIAT", "34_2");
+        opcodeDetails.put("PSHUIMMEDIAT", "36_2");
+        opcodeDetails.put("PULSIMMEDIAT", "35_2");
+        opcodeDetails.put("PULUIMMEDIAT", "37_2");
+
         //pour simuler load de DP Mode direct
         opcodeDetails.put("LDDPIMMEDIAT","1F_2");
 
@@ -54,22 +59,7 @@ public class Instruction {
         opcodeDetails.put("LDXETENDU","BE_3");
         opcodeDetails.put("LDYETENDU","10BE_4");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       //stocage Direct
-
         opcodeDetails.put("STADIRECT", "97_2");
         opcodeDetails.put("STBDIRECT", "D7_2");
         opcodeDetails.put("STSDIRECT", "10DF_3");
@@ -77,10 +67,7 @@ public class Instruction {
         opcodeDetails.put("STXDIRECT", "9F_2");
         opcodeDetails.put("STYDIRECT", "109F_3");
 
-
-
         //stocage ETENDU
-
         opcodeDetails.put("STAETENDU", "97_2");
         opcodeDetails.put("STBETENDU", "D7_2");
         opcodeDetails.put("STSETENDU", "10DF_3");
@@ -91,8 +78,7 @@ public class Instruction {
 
         //ADD IMMEDIAT
         opcodeDetails.put("ADDAIMMEDIAT", "8B_2");
-
-//CMP
+        //CMP
         opcodeDetails.put("CMPAIMMEDIAT", "81_2");
         opcodeDetails.put("CMPXIMMEDIAT", "8C_3");
 
@@ -122,19 +108,7 @@ public class Instruction {
 
 
 
-
-
-
-
-
-
-
-
-
-
-    // ------------------------------------
-    // MÉTHODES D’EXÉCUTION (appelées par RegistreCPU.step())
-    // ------------------------------------
+    //MÉTHODES D’EXÉCUTION (appelées par RegistreCPU.step())
 
     // LDA - Immédiat (basé sur votre méthode lda de la Logique)
     public void LDA_IMMEDIATE() {
@@ -149,7 +123,7 @@ public class Instruction {
 
     }
 
-    // LDB - Immédiat (basé sur votre méthode ldb de la Logique)
+    //LDB - Immédiat (basé sur votre méthode ldb de la Logique)
     public void LDB_IMMEDIATE() {
         int data = registres.fetchByte(); // Lit la donnée et avance le PC
 
@@ -159,9 +133,6 @@ public class Instruction {
         updateNZFlags(data);
         updateVFlag_Cleared();
     }
-
-
-
 
     public void LDX_IMMEDIATE() {
         int valor = registres.fetchWOrd();
@@ -188,22 +159,19 @@ public class Instruction {
     }
 
 
-
-
-
     // ABX - Inhérent (basé sur votre méthode abx de la Logique)
     public void ABX_INHERENT() {
         int B = registres.getB();
         int X = registres.getX();
 
-        // Simplement X = X + B (ici vous devez utiliser la logique d’addition avec les drapeaux si nécessaire)
-        int res = (X + B) & 0xFFFF; // X est un registre 16 bits
+        // Simplement X = X + B
+        int res = (X + B) & 0xFFFF;
 
         registres.setX(res);
         // Mettre à jour les drapeaux (CC) ici
     }
 
-    // NOP (Exemple)
+    // NOP
     public void NOP() {
         // Rien ne se passe. Le PC a déjà avancé.
     }
@@ -244,9 +212,6 @@ public class Instruction {
 
 
 
-
-
-
     public void LDX_DIRECT(){
         int adress = registres.getEffectiveAdressDirect();
         int high=memoire.read(adress);
@@ -279,9 +244,6 @@ public class Instruction {
         int data = registres.fetchByte();
         registres.setDP(data);
     }
-
-
-
 
 
 
@@ -360,41 +322,6 @@ public class Instruction {
 
 
 
-
-
-   /* public void LDA_ETENDU_INDIRECT() {
-        int ponteiro = registres.getEffectiveAdressEtendu();
-
-        int enderecoRealHigh = memoire.read(ponteiro) & 0xFF;
-        int enderecoRealLow = memoire.read(ponteiro + 1) & 0xFF;
-        int enderecoReal = (enderecoRealHigh << 8) | enderecoRealLow;
-
-        int valorFinal = memoire.read(enderecoReal) & 0xFF;
-
-        registres.setA(valorFinal);
-        updateNZFlags8(valorFinal);
-    }*/
-
-
-
-
-   /* public void LDB_ETENDU_INDIRECT() {
-        int pointeur = registres.getEffectiveAdressEtendu();
-
-        int adressHigh = memoire.read(pointeur) & 0xFF;
-        int adressLow = memoire.read(pointeur + 1) & 0xFF;
-        int adressreel = (adressHigh<< 8) | adressLow;
-
-        int valeurFinal = memoire.read(adressreel) & 0xFF;
-
-        registres.setB(valeurFinal);
-        updateNZFlags8(valeurFinal);
-    }*/
-
-
-
-
-
     public void LDA_INDEXE(){
 
     }
@@ -453,17 +380,13 @@ public void CMPA_IMMEDIATE() {
 
         int res = x - data;
 
-        updateNZFlags16(res);         // N et Z pour 16 bits
-        updateVFlag_SUB16(x, data, res); // V pour 16 bits
-        updateCFlag_SUB16(x, data);      // C pour 16 bits
+        updateNZFlags16(res);
+        updateVFlag_SUB16(x, data, res);
+        updateCFlag_SUB16(x, data);
     }
 
 
-
-    // =================================================================
-    // MÉTODOS AUXILIARES DE FLAGS (Condição de Código - CC)
-    // =================================================================
-
+    //MÉTODOS AUXILIARES DE FLAGS
     /** Atualiza as flags N (Negativo) e Z (Zero). */
     private void updateNZFlags(int value) {
         int cc = registres.getCC();
@@ -480,7 +403,6 @@ public void CMPA_IMMEDIATE() {
     /** Atualiza a flag C (Carry) - Bit 0. */
     private void updateCFlag(int result) {
         int cc = registres.getCC();
-        // C é 1 se houver um carry para fora do bit 7 (resultado > 0xFF)
         if (result > 0xFF) { cc |= 0x01; } else { cc &= ~0x01; }
         registres.setCC(cc);
     }
@@ -488,16 +410,16 @@ public void CMPA_IMMEDIATE() {
     /** Limpa a flag V (Overflow) - Usado em Load/Store. */
     private void updateVFlag_Cleared() {
         int cc = registres.getCC();
-        cc &= ~0x02; // Limpa o bit 1 (V)
+        cc &= ~0x02;
         registres.setCC(cc);
     }
 
     /** Atualiza a flag V (Overflow) para a operação ADD - Bit 1. */
     private void updateVFlag_ADD(int op1, int op2, int result) {
-        // Lógica de Overflow para 8 bits: Setada se (MSB1 == MSB2) e (MSB1 != MSBR)
         int cc = registres.getCC();
 
-        // Múltiplas formas de calcular V. Aqui, usamos a propriedade XOR.
+
+        //Múltiplas
         if (((op1 ^ result) & (op2 ^ result) & 0x80) != 0) {
             cc |= 0x02; // Seta V
         } else {
@@ -506,10 +428,9 @@ public void CMPA_IMMEDIATE() {
         registres.setCC(cc);
     }
 
-    /** Atualiza a flag H (Half-Carry) - Bit 5 (apenas para ADD/SUB). */
+   //LES FLAGS
     private void updateHFlag(int op1, int op2) {
-        // H é 1 se houver carry do bit 3 para o bit 4 (usado para BCD)
-        // A lógica é verificar o carry dos 4 bits inferiores.
+
         int cc = registres.getCC();
         if (((op1 & 0x0F) + (op2 & 0x0F)) > 0x0F) {
             cc |= 0x20; // Seta H (Bit 5)
@@ -523,26 +444,16 @@ public void CMPA_IMMEDIATE() {
 
     public void updateNZFlags16(int valor) {
         int cc = registres.getCC();
-
-        // Resetar bits N (bit 3) e Z (bit 2) -> 1111 0011 = 0xF3
         cc &= 0xF3;
-
-        // Se o bit 15 for 1, o número é negativo (N = 8)
         if ((valor & 0x8000) != 0) {
             cc |= 0x08;
         }
-
-        // Se o valor total (16 bits) for zero (Z = 4)
         if ((valor & 0xFFFF) == 0) {
             cc |= 0x04;
         }
 
-        registres.setCC(cc); // Isso vai disparar a mudança de cor na interface!
+        registres.setCC(cc);
     }
-
-
-
-
 
 
 
@@ -565,51 +476,27 @@ public void CMPA_IMMEDIATE() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //calcule de post octet endexe
 public int calcularPostByte(String operando) {
-    // Remove parênteses de indireção se existirem [ ,X]
     String clean = operando.toUpperCase().replace("[", "").replace("]", "").trim();
-
-    // Divide em Offset e Registador (ex: "5,X" -> ["5", "X"])
     String[] partes = clean.split(",");
     String reg = (partes.length > 1) ? partes[1].trim() : partes[0].trim();
     String offsetStr = (partes.length > 1 && !partes[0].isEmpty()) ? partes[0].trim() : "0";
 
-    // 1. Identifica o Registador (Bits 5 e 6 do Post-byte)
     int regBits = 0;
     if (reg.contains("X")) regBits = 0x00;      // 00
     else if (reg.contains("Y")) regBits = 0x20; // 01
     else if (reg.contains("U")) regBits = 0x40; // 10
     else if (reg.contains("S")) regBits = 0x60; // 11
 
-    // 2. Calcula o Offset (simplificado para 5-bits: -16 a +15)
     int offset = 0;
     try {
         offset = Integer.parseInt(offsetStr.replace("$", ""), offsetStr.contains("$") ? 16 : 10);
     } catch (Exception e) { offset = 0; }
 
-    // Formato 5-bit: 0 R R n n n n n
+    //Formato
     return regBits | (offset & 0x1F);
 }
-
-
-
-
-
-
-
 
 
 
@@ -621,31 +508,24 @@ public int calcularPostByte(String operando) {
 
 
 
-
-
-
-
-
-
-
     private int add8(int a, int b) {
         int result = a + b;
 
-        // H (Half carry)
+        //H
         updateHFlag(a, b);
 
-        // C (Carry)
+        //C
         int cc = registres.getCC();
         if ((result & 0x100) != 0) cc |= FLAG_C;
         else cc &= ~FLAG_C;
 
-        // V (Overflow)
+        //V
         if (((a ^ result) & (b ^ result) & 0x80) != 0) cc |= FLAG_V;
         else cc &= ~FLAG_V;
 
         registres.setCC(cc);
 
-        // N et Z
+        //N et Z
         updateNZFlags8(result);
 
         return result & 0xFF;
@@ -679,13 +559,13 @@ public int calcularPostByte(String operando) {
         registres.setCC(cc);
     }
 
-    /** Flag C pour SUB : Bit 0 */
+    /* SUB */
     private void updateCFlag_SUB(int op1, int op2) {
         int cc = registres.getCC();
         if (op1 < op2) {
-            cc |= 0x01; // Set C
+            cc |= 0x01;
         } else {
-            cc &= ~0x01; // Clear C
+            cc &= ~0x01;
         }
         registres.setCC(cc);
     }
@@ -705,15 +585,122 @@ public int calcularPostByte(String operando) {
         registres.setCC(cc);
     }
 
+    private void push8S(int v) {
+        registres.setS(registres.getS() - 1);
+        memoire.write(registres.getS(), (byte)(v & 0xFF));
+    }
+
+    private void push16S(int v) {
+        push8S(v & 0xFF);
+        push8S((v >> 8) & 0xFF);
+    }
+
+    private int pull8S() {
+        int v = memoire.read(registres.getS()) & 0xFF;
+        registres.setS(registres.getS() + 1);
+        return v;
+    }
+
+    private int pull16S() {
+        int high = pull8S();
+        int low  = pull8S();
+        return (high << 8) | low;
+    }
+    public void PSHS() {
+        int post = registres.fetchByte();
+
+        if ((post & 0x01) != 0) push8S(registres.getCC());
+        if ((post & 0x02) != 0) push8S(registres.getA());
+        if ((post & 0x04) != 0) push8S(registres.getB());
+        if ((post & 0x08) != 0) push8S(registres.getDP());
+        if ((post & 0x10) != 0) push16S(registres.getX());
+        if ((post & 0x20) != 0) push16S(registres.getY());
+        if ((post & 0x40) != 0) push16S(registres.getU());
+        if ((post & 0x80) != 0) push16S(registres.getPC());
+    }
+    public void PULS() {
+        int post = registres.fetchByte();
+
+        if ((post & 0x80) != 0) registres.setPC(pull16S());
+        if ((post & 0x40) != 0) registres.setU(pull16S());
+        if ((post & 0x20) != 0) registres.setY(pull16S());
+        if ((post & 0x10) != 0) registres.setX(pull16S());
+        if ((post & 0x08) != 0) registres.setDP(pull8S());
+        if ((post & 0x04) != 0) registres.setB(pull8S());
+        if ((post & 0x02) != 0) registres.setA(pull8S());
+        if ((post & 0x01) != 0) registres.setCC(pull8S());
+    }
+    //U METHODES
+    private void push8U(int v) {
+        registres.setU(registres.getU() - 1);
+        memoire.write(registres.getU(), (byte)(v & 0xFF));
+    }
+
+    private void push16U(int v) {
+        push8U(v & 0xFF);
+        push8U((v >> 8) & 0xFF);
+    }
+
+    private int pull8U() {
+        int v = memoire.read(registres.getU()) & 0xFF;
+        registres.setU(registres.getU() + 1);
+        return v;
+    }
+
+    private int pull16U() {
+        int high = pull8U();
+        int low  = pull8U();
+        return (high << 8) | low;
+    }
+
+    //PSHU
+    public void PSHU() {
+        int post = registres.fetchByte();
+
+        if ((post & 0x01) != 0) push8U(registres.getCC());
+        if ((post & 0x02) != 0) push8U(registres.getA());
+        if ((post & 0x04) != 0) push8U(registres.getB());
+        if ((post & 0x08) != 0) push8U(registres.getDP());
+        if ((post & 0x10) != 0) push16U(registres.getX());
+        if ((post & 0x20) != 0) push16U(registres.getY());
+        if ((post & 0x40) != 0) push16U(registres.getS());
+        if ((post & 0x80) != 0) push16U(registres.getPC());
+    }
+
+    //PULU
+    public void PULU() {
+        int post = registres.fetchByte();
+
+        if ((post & 0x80) != 0) registres.setPC(pull16U());
+        if ((post & 0x40) != 0) registres.setS(pull16U());
+        if ((post & 0x20) != 0) registres.setY(pull16U());
+        if ((post & 0x10) != 0) registres.setX(pull16U());
+        if ((post & 0x08) != 0) registres.setDP(pull8U());
+        if ((post & 0x04) != 0) registres.setB(pull8U());
+        if ((post & 0x02) != 0) registres.setA(pull8U());
+        if ((post & 0x01) != 0) registres.setCC(pull8U());
+    }
 
 
+    public int calculerPostOctetPSH_PUL(String operande) {
+        int post = 0;
+        String[] regs = operande.replace(" ", "").split(",");
 
-
-
-
-
-
-
+        for (String r : regs) {
+            switch (r) {
+                case "CC": post |= 0x01; break;
+                case "A":  post |= 0x02; break;
+                case "B":  post |= 0x04; break;
+                case "DP": post |= 0x08; break;
+                case "X":  post |= 0x10; break;
+                case "Y":  post |= 0x20; break;
+                case "U":
+                case "S":  post |= 0x40; break;
+                case "PC": post |= 0x80; break;
+            }
+        }
+        return post;
+    }
 
 
 

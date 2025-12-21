@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import Memoire.Memoire;
 
-// Fenetre RAM
+//Fenetre RAM
 public class FenetreRAM extends JFrame {
 
     private Memoire memoire;
@@ -17,7 +17,7 @@ public class FenetreRAM extends JFrame {
         setTitle("RAM View - Motorola 6809");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Uso do Model customizado
+
         MemoriaTableModel modelo = new MemoriaTableModel(this.memoire);
         tabelaMemoria = new JTable(modelo);
 
@@ -31,7 +31,6 @@ public class FenetreRAM extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // --- CLASSE INTERNA: O MODELO DE DADOS ---
     private static class MemoriaTableModel extends AbstractTableModel {
         private final Memoire memoireram;
         private final String[] nomcolunes = {"Address", "Byte (Hex)"};
@@ -82,17 +81,12 @@ public class FenetreRAM extends JFrame {
         public boolean isCellEditable(int row, int col) { return col == 1; }
     }
 
-    /**
-     * MÉTODO CORRIGIDO:
-     * É este método que faz o "Refresh" da tabela.
-     */
+
     public void atualiseTableaux() {
         if (this.tabelaMemoria != null) {
-            // 1. Pega o modelo e avisa que os dados mudaram
             AbstractTableModel modelo = (AbstractTableModel) tabelaMemoria.getModel();
             modelo.fireTableDataChanged();
 
-            // 2. Força o Java a redesenhar os componentes gráficos
             tabelaMemoria.revalidate();
             tabelaMemoria.repaint();
         }

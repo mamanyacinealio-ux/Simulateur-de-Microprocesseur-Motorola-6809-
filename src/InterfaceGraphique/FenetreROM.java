@@ -22,7 +22,7 @@ public class FenetreROM extends JFrame{
 
         this.memoire = m;
 
-        // configuration de la fenetre
+        //configuration de la fenetre
         setTitle("ROM");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -35,10 +35,10 @@ public class FenetreROM extends JFrame{
         tableauMemoire.setFont(new Font("Monospaced", Font.PLAIN, 12));
         tableauMemoire.setRowHeight(18);
 
-        // Ajouter le tableau a un pannaeu de defilement
+        //ajouter le tableau a un pannaeu
         JScrollPane scrollPane = new JScrollPane(tableauMemoire);
 
-        // Layout e affichage
+        //Layout e affichage
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         pack();
@@ -54,9 +54,9 @@ public class FenetreROM extends JFrame{
 
         private final String[] nomesColunas = {"", ""};
 
-        // A ROM tem 8KB (32768 - 65535) = 8192 bytes
-        private final int Tail_ROM = 0x400; // 8192 bytes
-        private final int Adress_Initial = Memoire.ROM_START; // Ex: 0xE000
+
+        private final int Tail_ROM = 0x400;
+        private final int Adress_Initial = Memoire.ROM_START;
 
         public ROMTableModel(Memoire memoria) {
             this.memoriaFonte = memoria;
