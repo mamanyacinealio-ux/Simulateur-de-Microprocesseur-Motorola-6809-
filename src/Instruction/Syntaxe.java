@@ -12,7 +12,7 @@ public class Syntaxe {
 
     //LIste des instructions
     private static final Set<String> CODEI = new HashSet<>(Arrays.asList(
-            "LDA", "LDB", "STA", "STB", "JMP", "ADD", "SUB", "BRA", "NOP"
+            "LDA", "LDB", "STA", "STB", "JMP", "ADD", "SUB", "BRA", "NOP","STA"
     ));
 
     private FenetreEdition fenetre;

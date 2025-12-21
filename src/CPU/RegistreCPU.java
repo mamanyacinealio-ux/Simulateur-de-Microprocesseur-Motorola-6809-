@@ -47,6 +47,8 @@ public class RegistreCPU {
 
         // Opcode 0x3A : ABX Inhérent
         executionMap.put(0x3A, r -> instruction.ABX_INHERENT());
+        //opcode 0X97 : STA direct
+        executionMap.put(0x97, r -> instruction.STA_DIRECT());
 
 
         // Ajouter tous les autres opcodes ici

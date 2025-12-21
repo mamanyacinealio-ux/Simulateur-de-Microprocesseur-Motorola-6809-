@@ -24,6 +24,7 @@ public class Instruction {
         opcodeDetails.put("LDYIMMEDIAT","108E_4");
         opcodeDetails.put("LDUIMMEDIAT","CE_3");
         opcodeDetails.put("LDSIMMEDIAT","10CE_4");
+        opcodeDetails.put("STADIRECT","97_2");
         // Ajouter d'autres opcodes ici...
     }
 
