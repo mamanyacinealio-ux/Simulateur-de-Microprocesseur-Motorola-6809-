@@ -35,11 +35,6 @@ public class Instruction {
         opcodeDetails.put("LDSIMMEDIAT","10CE_4");
         //pour simuler load de DP Mode direct
         opcodeDetails.put("LDDPIMMEDIAT","1F_2");
-        opcodeDetails.put("PSHSIMMEDIAT", "34_2");
-        opcodeDetails.put("PSHUIMMEDIAT", "36_2");
-        opcodeDetails.put("PULSIMMEDIAT", "35_2");
-        opcodeDetails.put("PULUIMMEDIAT", "37_2");
-
 
         //modes Direct LD
 
@@ -451,83 +446,25 @@ public void CMPA_IMMEDIATE() {
 }
 
 
-    public int calculerPostOctetPSH_PUL(String operande) {
-        int post = 0;
-        String[] regs = operande.replace(" ", "").split(",");
 
-        for (String r : regs) {
-            switch (r) {
-                case "CC": post |= 0x01; break;
-                case "A":  post |= 0x02; break;
-                case "B":  post |= 0x04; break;
-                case "DP": post |= 0x08; break;
-                case "X":  post |= 0x10; break;
-                case "Y":  post |= 0x20; break;
-                case "U":
-                case "S":  post |= 0x40; break;
-                case "PC": post |= 0x80; break;
-            }
-        }
-        return post;
-    }
+    public void CMPX_IMMEDIATE() {
+        int data = registres.fetchWOrd();
+        int x = registres.getX();
 
-    private void push8S(int v) {
-        registres.setS(registres.getS() - 1);
-        memoire.write(registres.getS(), (byte)(v & 0xFF));
-    }
+        int res = x - data;
 
-    private void push16S(int v) {
-        push8S(v & 0xFF);
-        push8S((v >> 8) & 0xFF);
-    }
-
-    private int pull8S() {
-        int v = memoire.read(registres.getS()) & 0xFF;
-        registres.setS(registres.getS() + 1);
-        return v;
-    }
-
-    private int pull16S() {
-        int high = pull8S();
-        int low  = pull8S();
-        return (high << 8) | low;
-    }
-
-    //push
-    public void PSHS_IMMEDIATE() {
-        int post = registres.fetchByte();
-
-        if ((post & 0x01) != 0) push8S(registres.getCC());
-        if ((post & 0x02) != 0) push8S(registres.getA());
-        if ((post & 0x04) != 0) push8S(registres.getB());
-        if ((post & 0x08) != 0) push8S(registres.getDP());
-        if ((post & 0x10) != 0) push16S(registres.getX());
-        if ((post & 0x20) != 0) push16S(registres.getY());
-        if ((post & 0x40) != 0) push16S(registres.getU());
-        if ((post & 0x80) != 0) push16S(registres.getPC());
-    }
-    //pul
-    public void PULS() {
-        int post = registres.fetchByte();
-
-        if ((post & 0x80) != 0) registres.setPC(pull16S());
-        if ((post & 0x40) != 0) registres.setU(pull16S());
-        if ((post & 0x20) != 0) registres.setY(pull16S());
-        if ((post & 0x10) != 0) registres.setX(pull16S());
-        if ((post & 0x08) != 0) registres.setDP(pull8S());
-        if ((post & 0x04) != 0) registres.setB(pull8S());
-        if ((post & 0x02) != 0) registres.setA(pull8S());
-        if ((post & 0x01) != 0) registres.setCC(pull8S());
+        updateNZFlags16(res);         // N et Z pour 16 bits
+        updateVFlag_SUB16(x, data, res); // V pour 16 bits
+        updateCFlag_SUB16(x, data);      // C pour 16 bits
     }
 
 
 
+    // =================================================================
+    // MÉTODOS AUXILIARES DE FLAGS (Condição de Código - CC)
+    // =================================================================
 
-
-
-
-
-
+    /** Atualiza as flags N (Negativo) e Z (Zero). */
     private void updateNZFlags(int value) {
         int cc = registres.getCC();
 
@@ -767,7 +704,6 @@ public int calcularPostByte(String operando) {
         else cc &= ~0x01;
         registres.setCC(cc);
     }
-
 
 
 

@@ -73,8 +73,6 @@ public class RegistreCPU {
 
         // Opcode 0x3A : ABX Inhérent
         executionMap.put(0x3A, r -> instruction.ABX_INHERENT());
-        //opcode 0X97 : STA direct
-        executionMap.put(0x97, r -> instruction.STA_DIRECT());
 
 
 
@@ -117,15 +115,10 @@ public class RegistreCPU {
 
 //ADD IMMEDIAT
         executionMap.put(0x8B, r -> instruction.ADDA_IMMEDIAT());
-        executionMap.put(0x34, r -> instruction.PSHS_IMMEDIATE());
-       /* executionMap.put(0x35, r -> instruction.PULS());
-        executionMap.put(0x36, r -> instruction.PSHU());
-        executionMap.put(0x37, r -> instruction.PULU());*/
 
 //CMPA
         executionMap.put(0x81, r -> instruction.CMPA_IMMEDIATE());
-        //executionMap.put(0x8C, r -> instruction.CMPX_IMMEDIATE());
-
+        executionMap.put(0x8C, r -> instruction.CMPX_IMMEDIATE());
 
 
 

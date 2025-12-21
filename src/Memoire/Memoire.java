@@ -60,4 +60,23 @@ public class Memoire {
             }
         }
     }
+
+    public void clearRAM() {
+        for (int i = 0; i < ROM_START; i++) {
+            write(i, (byte) 0x00);
+        }
+    }
+
+    public void clearROM() {
+        for (int i = ROM_START; i < memoire.length; i++) {
+            write(i, (byte) 0x00);
+        }
+    }
+
+    public void clearAll() {
+        for (int i = 0; i < memoire.length; i++) {
+            write(i, (byte) 0x00);
+        }
+    }
+
 }
