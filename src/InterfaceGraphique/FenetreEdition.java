@@ -1,6 +1,5 @@
 package InterfaceGraphique;
 
-import Instruction.Syntaxe;
 import javax.swing.*;
 import java.awt.*;
 import CPU.RegistreCPU;
@@ -39,9 +38,6 @@ public class FenetreEdition extends JFrame {
 
         zoneTexte = new JTextArea();
         zoneTexte.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        zoneTexte.setLineWrap(true);
-        zoneTexte.setWrapStyleWord(true);
-
         add(new JScrollPane(zoneTexte), BorderLayout.CENTER);
 
         registres.setPC(START_ADDRESS);
@@ -55,67 +51,80 @@ public class FenetreEdition extends JFrame {
 
         JButton BSTEP = new JButton("STEP");
         BSTEP.addActionListener(e -> {
-            try {
-                registres.step();
-                if (RAM != null) RAM.atualiseTableaux();
-                if (ROM != null) ROM.atualiseTableau();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
-            }
+            registres.step();
+            if (RAM != null) RAM.atualiseTableaux();
+            if (ROM != null) ROM.atualiseTableau();
         });
         barre.add(BSTEP);
     }
 
-    public String getCode() {
-        return zoneTexte.getText();
-    }
+    // =====================================================
+    // DÉTECTION MODE D’ADRESSAGE
+    // =====================================================
+    private String decode(String inst, String op) {
 
-    public String decode(String inst, String m) {
+        if (op == null || op.trim().isEmpty()) return "INHERENT";
 
-        if (m == null || m.trim().isEmpty()) return "INHERENT";
+        op = op.trim();
 
-        String op = m.trim();
+        if (op.startsWith("#$")) return "IMMEDIAT";
+        if (op.startsWith("<")) return "DIRECT";
+        if (op.startsWith("$")) return "ETENDU";
 
-        if (op.startsWith("#$")) {
-            if (is16BitInstruction(inst))
-                return (op.length() == 6) ? "IMMEDIAT" : "FALSE";
-            else
-                return (op.length() == 4) ? "IMMEDIAT" : "FALSE";
-        }
-
-        if (op.startsWith("$") && op.length() == 5) return "ETENDU";
-        if (op.startsWith("<") && op.length() == 3) return "DIRECT";
-        if (op.startsWith("[") && op.endsWith("]")) return "ETENDU INDIRECT";
+        // INDEXÉ SIMPLE
+        if (op.matches("(-?\\$?[0-9A-F]+)?\\s*,\\s*[XYUS]"))
+            return "INDEXE";
 
         return "FALSE";
     }
 
     // =====================================================
-    // ASSEMBLEUR CORRIGÉ
+    // POSTBYTE INDEXÉ SIMPLE
+    // =====================================================
+    private int postbyteIndexeSimple(String op) {
+
+        char reg = op.charAt(op.length() - 1);
+
+        int base;
+        switch (reg) {
+            case 'X': base = 0x84; break;
+            case 'Y': base = 0xA4; break;
+            case 'U': base = 0xC4; break;
+            case 'S': base = 0xE4; break;
+            default: throw new IllegalArgumentException("Registre index invalide");
+        }
+
+        // ,X
+        if (op.startsWith(",")) return base;
+
+        // n,X
+        return base | 0x08;
+    }
+
+    // =====================================================
+    // ASSEMBLAGE + CHARGEMENT
     // =====================================================
     public void assembleAndLoad() {
 
-        String prog = getCode().toUpperCase();
-        String[] lignes = prog.split("\\R");
+        String[] lignes = zoneTexte.getText().toUpperCase().split("\\R");
         int adr = START_ADDRESS;
 
         try {
             registres.reset();
-
+         memoire.clearROM();
             for (String ligne : lignes) {
 
-                String clean = ligne.trim();
-                if (clean.isEmpty() || clean.startsWith(";") || clean.equals("END"))
+                ligne = ligne.trim();
+                if (ligne.isEmpty() || ligne.startsWith(";") || ligne.equals("END"))
                     break;
 
-                String[] parts = clean.split("\\s+", 2);
+                String[] parts = ligne.split("\\s+", 2);
                 String inst = parts[0];
-                String operande = (parts.length > 1) ? parts[1] : "";
+                String op = (parts.length > 1) ? parts[1] : "";
 
-                String mode = decode(inst, operande);
+                String mode = decode(inst, op);
                 if (mode.equals("FALSE"))
-                    throw new Exception("Mode invalide : " + operande);
+                    throw new Exception("Mode invalide : " + op);
 
                 String opcodeStr = instruction.opcode(inst, mode);
                 if (opcodeStr == null)
@@ -126,31 +135,51 @@ public class FenetreEdition extends JFrame {
                 int nbOctet = Integer.parseInt(
                         opcodeStr.substring(opcodeStr.length() - 1));
 
-                // -------- ÉCRITURE OPCODE --------
-                int offset;
-                if (opcode <= 0xFF) {
-                    memoire.write(adr, (byte) (opcode & 0xFF));
-                    offset = 1;
-                } else {
-                    memoire.write(adr,     (byte) ((opcode >> 8) & 0xFF));
-                    memoire.write(adr + 1, (byte) (opcode & 0xFF));
-                    offset = 2;
+                int offset = (opcode <= 0xFF) ? 1 : 2;
+
+                // OPCODE
+                if (offset == 1)
+                    memoire.write(adr, (byte) opcode);
+                else {
+                    memoire.write(adr,     (byte) (opcode >> 8));
+                    memoire.write(adr + 1, (byte) opcode);
                 }
 
-                // -------- ÉCRITURE OPÉRANDE --------
-                if (nbOctet > offset) {
+                // ================= INDEXÉ SIMPLE =================
+                if (mode.equals("INDEXE")) {
 
-                    String valHex = operande.replaceAll("[#$<>\\[\\]\\s]", "");
-                    if (valHex.contains(",")) valHex = valHex.split(",")[0];
+                    int post = postbyteIndexeSimple(op);
+                    memoire.write(adr + offset, (byte) post);
 
+                    if (!op.startsWith(",")) {
+                        String offStr = op.split(",")[0].trim();
+                        int off = offStr.startsWith("$")
+                                ? Integer.parseInt(offStr.substring(1), 16)
+                                : Integer.parseInt(offStr);
+
+                        if (off < -128 || off > 127)
+                            throw new Exception("Offset hors limite (-128..127)");
+
+                        memoire.write(adr + offset + 1, (byte) off);
+                        adr += offset + 2;
+                    } else {
+                        adr += offset + 1;
+                    }
+                    continue;
+                }
+
+                // ================= AUTRES MODES =================
+                if (!mode.equals("INHERENT")) {
+
+                    String valHex = op.replaceAll("[#$<>\\s]", "");
                     int val = Integer.parseInt(valHex, 16);
-                    int tailleOperande = nbOctet - offset;
+                    int taille = nbOctet - offset;
 
-                    if (tailleOperande == 1) {
-                        memoire.write(adr + offset, (byte) (val & 0xFF));
-                    } else if (tailleOperande == 2) {
-                        memoire.write(adr + offset,     (byte) ((val >> 8) & 0xFF));
-                        memoire.write(adr + offset + 1, (byte) (val & 0xFF));
+                    if (taille == 1)
+                        memoire.write(adr + offset, (byte) val);
+                    else if (taille == 2) {
+                        memoire.write(adr + offset,     (byte) (val >> 8));
+                        memoire.write(adr + offset + 1, (byte) val);
                     }
                 }
 
@@ -161,9 +190,7 @@ public class FenetreEdition extends JFrame {
             if (ROM != null) ROM.atualiseTableau();
             if (RAM != null) RAM.atualiseTableaux();
 
-            JOptionPane.showMessageDialog(this,
-                    "Programme chargé à partir de $" +
-                            String.format("%04X", START_ADDRESS));
+            JOptionPane.showMessageDialog(this, "Programme chargé ✔");
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,
@@ -171,97 +198,32 @@ public class FenetreEdition extends JFrame {
                     "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    private boolean is16BitInstruction(String inst) {
-        return inst.equals("LDX") || inst.equals("LDY") ||
-                inst.equals("LDD") || inst.equals("LDS") ||
-                inst.equals("LDU") || inst.equals("CMPX") ||
-                inst.equals("CMPY");
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

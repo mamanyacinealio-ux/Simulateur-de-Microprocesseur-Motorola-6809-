@@ -57,18 +57,17 @@ public class Instruction {
 
 
 
+        //LDOAD INDEXE
+
+        opcodeDetails.put("LDAINDEXE","A6_2");
+        opcodeDetails.put("LDBINDEXE","E6_2");
+        opcodeDetails.put("LDSINDEXE","10EE_3");
+        opcodeDetails.put("LDUINDEXE","EE_2");
+        opcodeDetails.put("LDXINDEXE","AE_2");
+        opcodeDetails.put("LDYINDEXE","10AE_3");
 
 
-
-
-
-
-
-
-
-
-
-      //stocage Direct
+        //stocage Direct
 
         opcodeDetails.put("STADIRECT", "97_2");
         opcodeDetails.put("STBDIRECT", "D7_2");
@@ -76,8 +75,6 @@ public class Instruction {
         opcodeDetails.put("STUDIRECT", "DF_2");
         opcodeDetails.put("STXDIRECT", "9F_2");
         opcodeDetails.put("STYDIRECT", "109F_3");
-
-
 
         //stocage ETENDU
 
@@ -88,13 +85,131 @@ public class Instruction {
         opcodeDetails.put("STXETENDU", "9F_2");
         opcodeDetails.put("STYETENDU", "109F_3");
 
+//STOCAGEE INDEXE
+        opcodeDetails.put("STAINDEXE", "A7_2");
+        opcodeDetails.put("STBINDEXE", "E7_2");
+        opcodeDetails.put("STSINDEXE", "10EF_3");
+        opcodeDetails.put("STUINDEXE", "EF_2");
+        opcodeDetails.put("STXINDEXE", "AF_2");
+        opcodeDetails.put("STYINDEXE", "10AF_3");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //ADD IMMEDIAT
         opcodeDetails.put("ADDAIMMEDIAT", "8B_2");
+        opcodeDetails.put("ADDBIMMEDIAT", "CB_2");
+        //ADD DIRECT
+        opcodeDetails.put("ADDADIRECT", "9B_2");
+        opcodeDetails.put("ADDBDIRECT", "DB_2");
 
-//CMP
+        //ADD ETENDU
+        opcodeDetails.put("ADDAETENDU", "BB_3");
+        opcodeDetails.put("ADDBETENDU", "FB_3");
+
+         //CMP IMMEDIAT
         opcodeDetails.put("CMPAIMMEDIAT", "81_2");
+        opcodeDetails.put("CMPBIMMEDIAT", "C1_2");
         opcodeDetails.put("CMPXIMMEDIAT", "8C_3");
+        opcodeDetails.put("CMPYIMMEDIAT", "8C_4");
+        opcodeDetails.put("CMPSIMMEDIAT", "118C_4");
+        opcodeDetails.put("CMPUIMMEDIAT", "1183_4");
+        //CMP DIRECT
+        opcodeDetails.put("CMPADIRECT", "91_2");
+        opcodeDetails.put("CMPBDIRECT", "D1_2");
+        opcodeDetails.put("CMPXDIRECT", "9C_3");
+        opcodeDetails.put("CMPYDIRECT", "119C_3");
+        opcodeDetails.put("CMPSDIRECT", "119C_3");
+        opcodeDetails.put("CMPUDIRECT", "1193_3");
+        //CMP ETENDU
+        opcodeDetails.put("CMPAETENDU", "B1_3");
+        opcodeDetails.put("CMPBETENDU", "F1_3");
+        opcodeDetails.put("CMPXETENDU", "BC_3");
+        opcodeDetails.put("CMPYETENDU", "10BC_4");
+        opcodeDetails.put("CMPSETENDU", "11BC_4");
+        opcodeDetails.put("CMPUETENDU", "11B3_4");
+
+        //CMP ETENDU
+        opcodeDetails.put("CMPAINDEXE", "A1_2");
+        opcodeDetails.put("CMPBINDEXE", "E1_2");
+        opcodeDetails.put("CMPXINDEXE", "AC_2");
+        opcodeDetails.put("CMPYINDEXE", "10AC_3");
+        opcodeDetails.put("CMPSINDEXE", "11AC_3");
+        opcodeDetails.put("CMPUINDEXE", "11A3_3");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Ajouter d'autres opcodes ici...
     }
@@ -343,6 +458,95 @@ public class Instruction {
 
 
 
+    //LOAD INDEXE
+
+    public void LDA_INDEXE() {
+        int addr = getEffectiveAddressIndexe();
+        int data = memoire.read(addr) & 0xFF;
+        registres.setA(data);
+
+        updateNZFlags(data);
+        updateVFlag_Cleared();
+    }
+
+
+
+
+    public void LDB_INDEXE() {
+        int addr = getEffectiveAddressIndexe();
+        int data = memoire.read(addr) & 0xFF;
+        registres.setB(data);
+
+        updateNZFlags(data);
+        updateVFlag_Cleared();
+    }
+
+    public void LDX_INDEXE() {
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int val = (high << 8) | low;
+
+        registres.setX(val);
+        updateNZFlags16(val);
+    }
+
+
+
+    public void LDY_INDEXE() {
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int val = (high << 8) | low;
+
+        registres.setY(val);
+        updateNZFlags16(val);
+    }
+
+
+
+
+
+
+
+    public void LDS_INDEXE() {
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int val = (high << 8) | low;
+
+        registres.setS(val);
+        updateNZFlags16(val);
+    }
+
+
+
+
+
+
+
+
+
+
+    public void LDU_INDEXE() {
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int val = (high << 8) | low;
+
+        registres.setU(val);
+        updateNZFlags16(val);
+    }
+
+
+
+
+
+
+
+
+
+
     //ADDA
     public void ADDA_IMMEDIAT() {
         int data = registres.fetchByte(); // #$32
@@ -356,6 +560,56 @@ public class Instruction {
         updateVFlag_ADD(a, data, res);// V
         updateHFlag(a, data);         // H
         updateCFlag(res);             // C
+    }
+
+
+    public void ADDB_IMMEDIAT() {
+        int data = registres.fetchByte(); // #$32
+        int a = registres.getB();
+
+        int res = a + data; // Calcul
+        registres.setA(res & 0xFF); // Stockage 8 bits
+
+        // Mise à jour des flags
+        updateNZFlags(res);           // N et Z
+        updateVFlag_ADD(a, data, res);// V
+        updateHFlag(a, data);         // H
+        updateCFlag(res);             // C
+    }
+
+
+    //ADD DIRECT
+
+
+
+    public void ADDA_DIRECT() {
+        int adr = registres.getEffectiveAdressDirect();
+        int data = memoire.read(adr) & 0xFF;
+        registres.setA(add8(registres.getA(), data));
+    }
+
+
+    public void ADDB_DIRECT() {
+        int adr = registres.getEffectiveAdressDirect();
+        int data = memoire.read(adr) & 0xFF;
+        registres.setA(add8(registres.getA(), data));
+    }
+
+
+//ADD ETENDU
+
+
+    public void ADDA_ETENDU() {
+        int adr = registres.getEffectiveAdressEtendu();
+        int data = memoire.read(adr) & 0xFF;
+        registres.setA(add8(registres.getA(), data));
+    }
+
+
+    public void ADDB_ETENDU() {
+        int adr = registres.getEffectiveAdressEtendu();
+        int data = memoire.read(adr) & 0xFF;
+        registres.setA(add8(registres.getA(), data));
     }
 
 
@@ -395,9 +649,7 @@ public class Instruction {
 
 
 
-    public void LDA_INDEXE(){
 
-    }
 //Stocage DIRECT
     public void STA_DIRECT(){
         int adress= registres.getEffectiveAdressDirect();
@@ -431,7 +683,190 @@ public class Instruction {
         store16(registres.getU(), registres.getEffectiveAdressDirect());
     }
 
-//CMP
+
+
+
+
+
+
+
+
+
+    //STocage ETENDU
+
+    public void STA_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu(); // adresse 16 bits
+        int valeur = registres.getA() & 0xFF;           // registre A = 8 bits
+        memoire.write(addr, (byte) valeur);
+    }
+
+
+    public void STB_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu(); // adresse 16 bits
+        int valeur = registres.getB() & 0xFF;           // registre A = 8 bits
+        memoire.write(addr, (byte) valeur);
+    }
+
+
+
+    public void STX_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int valeur = registres.getX() & 0xFFFF;         // registre X = 16 bits
+        memoire.write(addr, (byte) (valeur >> 8));     // high byte
+        memoire.write(addr + 1, (byte) (valeur & 0xFF)); // low byte
+    }
+
+
+
+
+
+
+
+
+    public void STU_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int valeur = registres.getU() & 0xFFFF;         // registre X = 16 bits
+        memoire.write(addr, (byte) (valeur >> 8));     // high byte
+        memoire.write(addr + 1, (byte) (valeur & 0xFF)); // low byte
+    }
+
+
+
+
+
+    public void STS_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int valeur = registres.getS() & 0xFFFF;         // registre X = 16 bits
+        memoire.write(addr, (byte) (valeur >> 8));     // high byte
+        memoire.write(addr + 1, (byte) (valeur & 0xFF)); // low byte
+    }
+
+
+
+
+
+
+    public void STY_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int valeur = registres.getY() & 0xFFFF;         // registre X = 16 bits
+        memoire.write(addr, (byte) (valeur >> 8));     // high byte
+        memoire.write(addr + 1, (byte) (valeur & 0xFF)); // low byte
+    }
+
+
+
+
+
+
+//STOCAGE INDEXE
+
+    public void STA_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int a = registres.getA();
+
+        memoire.write(addr, (byte) a);
+
+        updateNZFlags(a);
+        updateVFlag_Cleared(); // V = 0
+    }
+
+
+    public void STB_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int a = registres.getA();
+
+        memoire.write(addr, (byte) a);
+
+        updateNZFlags(a);
+        updateVFlag_Cleared(); // V = 0
+    }
+
+
+    public void STX_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int x = registres.getX();
+
+        memoire.write(addr,     (byte) (x >> 8));
+        memoire.write(addr + 1, (byte) x);
+
+        updateNZFlags16(x);
+        updateVFlag_Cleared(); // V = 0
+    }
+
+
+
+
+    public void STY_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int x = registres.getX();
+
+        memoire.write(addr,     (byte) (x >> 8));
+        memoire.write(addr + 1, (byte) x);
+
+        updateNZFlags16(x);
+        updateVFlag_Cleared(); // V = 0
+    }
+
+
+    public void STS_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int x = registres.getX();
+
+        memoire.write(addr,     (byte) (x >> 8));
+        memoire.write(addr + 1, (byte) x);
+
+        updateNZFlags16(x);
+        updateVFlag_Cleared(); // V = 0
+    }
+
+
+
+
+
+
+    public void STU_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int x = registres.getX();
+
+        memoire.write(addr,     (byte) (x >> 8));
+        memoire.write(addr + 1, (byte) x);
+
+        updateNZFlags16(x);
+        updateVFlag_Cleared(); // V = 0
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //CMP
 public void CMPA_IMMEDIATE() {
     int data = registres.fetchByte();
     int a = registres.getA();
@@ -446,6 +881,20 @@ public void CMPA_IMMEDIATE() {
 }
 
 
+    public void CMPB_IMMEDIATE() {
+        int data = registres.fetchByte();
+        int a = registres.getB();
+
+        int res = a - data; // Comparaison = soustraction
+
+        // Flags : N, Z, V, C, H
+        updateNZFlags(res);           // N et Z
+        updateVFlag_SUB(a, data, res);// V
+        updateHFlag_SUB(a, data);     // H
+        updateCFlag_SUB(a, data);     // C
+    }
+
+
 
     public void CMPX_IMMEDIATE() {
         int data = registres.fetchWOrd();
@@ -457,6 +906,459 @@ public void CMPA_IMMEDIATE() {
         updateVFlag_SUB16(x, data, res); // V pour 16 bits
         updateCFlag_SUB16(x, data);      // C pour 16 bits
     }
+
+
+
+
+
+
+
+    public void CMPY_IMMEDIATE() {
+        int data = registres.fetchWOrd();
+        int x = registres.getY();
+
+        int res = x - data;
+
+        updateNZFlags16(res);         // N et Z pour 16 bits
+        updateVFlag_SUB16(x, data, res); // V pour 16 bits
+        updateCFlag_SUB16(x, data);      // C pour 16 bits
+    }
+
+
+
+
+    public void CMPS_IMMEDIATE() {
+        int data = registres.fetchWOrd();
+        int x = registres.getS();
+
+        int res = x - data;
+
+        updateNZFlags16(res);         // N et Z pour 16 bits
+        updateVFlag_SUB16(x, data, res); // V pour 16 bits
+        updateCFlag_SUB16(x, data);      // C pour 16 bits
+    }
+
+
+
+
+    public void CMPU_IMMEDIATE() {
+        int data = registres.fetchWOrd();
+        int x = registres.getU();
+
+        int res = x - data;
+
+        updateNZFlags16(res);         // N et Z pour 16 bits
+        updateVFlag_SUB16(x, data, res); // V pour 16 bits
+        updateCFlag_SUB16(x, data);      // C pour 16 bits
+    }
+
+
+
+
+
+
+
+
+//CMP DIRECT
+public void CMPA_DIRECT() {
+    int addr = registres.getEffectiveAdressDirect();
+    int memVal = memoire.read(addr) & 0xFF;
+    int regA = registres.getA() & 0xFF;
+
+    int result = regA - memVal;
+
+    updateNZFlags(result & 0xFF);
+
+    // Mise à jour du flag C dans CC
+    if (regA >= memVal) {
+        registres.setCC(registres.getCC() | 0x01);   // C = 1
+    } else {
+        registres.setCC(registres.getCC() & ~0x01);  // C = 0
+    }
+}
+
+
+
+
+    public void CMPB_DIRECT() {
+        int addr = registres.getEffectiveAdressDirect();
+        int memVal = memoire.read(addr) & 0xFF;
+        int regA = registres.getB() & 0xFF;
+
+        int result = regA - memVal;
+
+        updateNZFlags(result & 0xFF);
+
+        // Mise à jour du flag C dans CC
+        if (regA >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);   // C = 1
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);  // C = 0
+        }
+    }
+
+
+    public void CMPX_DIRECT() {
+        int addr = registres.getEffectiveAdressDirect();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getX() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        // Flag C
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+    public void CMPY_DIRECT() {
+        int addr = registres.getEffectiveAdressDirect();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getY() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        // Flag C
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    public void CMPS_DIRECT() {
+        int addr = registres.getEffectiveAdressDirect();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getS() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        // Flag C
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+
+
+    public void CMPU_DIRECT() {
+        int addr = registres.getEffectiveAdressDirect();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getU() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        // Flag C
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+//CMP ETENDU
+
+
+    public void CMPA_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int memVal = memoire.read(addr) & 0xFF;
+        int regA = registres.getA() & 0xFF;
+
+        int result = regA - memVal;
+
+        updateNZFlags(result & 0xFF);
+
+        if (regA >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+    public void CMPB_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int memVal = memoire.read(addr) & 0xFF;
+        int regA = registres.getA() & 0xFF;
+
+        int result = regA - memVal;
+
+        updateNZFlags(result & 0xFF);
+
+        if (regA >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+    public void CMPX_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getX() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+
+
+    public void CMPY_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getX() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+
+
+    public void CMPS_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getX() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    public void CMPU_ETENDU() {
+        int addr = registres.getEffectiveAdressEtendu();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int memVal = (high << 8) | low;
+
+        int regX = registres.getX() & 0xFFFF;
+        int result = regX - memVal;
+
+        updateNZFlags(result & 0xFFFF);
+
+        if (regX >= memVal) {
+            registres.setCC(registres.getCC() | 0x01);
+        } else {
+            registres.setCC(registres.getCC() & ~0x01);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//CMP INDEXE
+public void CMPA_INDEXE() {
+
+    int addr = getEffectiveAddressIndexe();
+    int a = registres.getA();
+    int data = memoire.read(addr) & 0xFF;
+
+    int res = a - data;
+
+    updateNZFlags(res);
+    updateVFlag_SUB(a, data, res);
+    updateCFlag_SUB(a, data);
+}
+
+    public void CMPB_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int a = registres.getA();
+        int data = memoire.read(addr) & 0xFF;
+
+        int res = a - data;
+
+        updateNZFlags(res);
+        updateVFlag_SUB(a, data, res);
+        updateCFlag_SUB(a, data);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public void CMPX_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int data = (high << 8) | low;
+
+        int x = registres.getX();
+        int res = x - data;
+
+        updateNZFlags16(res);
+        updateVFlag_SUB16(x, data, res);
+        updateCFlag_SUB16(x, data);
+    }
+
+
+
+
+    public void CMPY_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int data = (high << 8) | low;
+
+        int x = registres.getX();
+        int res = x - data;
+
+        updateNZFlags16(res);
+        updateVFlag_SUB16(x, data, res);
+        updateCFlag_SUB16(x, data);
+    }
+
+
+    public void CMPS_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int data = (high << 8) | low;
+
+        int x = registres.getX();
+        int res = x - data;
+
+        updateNZFlags16(res);
+        updateVFlag_SUB16(x, data, res);
+        updateCFlag_SUB16(x, data);
+    }
+
+
+    public void CMPU_INDEXE() {
+
+        int addr = getEffectiveAddressIndexe();
+        int high = memoire.read(addr) & 0xFF;
+        int low  = memoire.read(addr + 1) & 0xFF;
+        int data = (high << 8) | low;
+
+        int x = registres.getX();
+        int res = x - data;
+
+        updateNZFlags16(res);
+        updateVFlag_SUB16(x, data, res);
+        updateCFlag_SUB16(x, data);
+    }
+
+
+
+
 
 
 
@@ -565,6 +1467,47 @@ public void CMPA_IMMEDIATE() {
 
 
 
+    //INDEXE
+
+    private int getEffectiveAddressIndexe() {
+        int post = registres.fetchByte();   // post-byte
+        int reg = (post >> 5) & 0x03;       // bits RR
+        int mode = post & 0x1F;             // offset ou mode
+
+        int base;
+        switch (reg) {
+            case 0: base = registres.getX(); break;
+            case 1: base = registres.getY(); break;
+            case 2: base = registres.getU(); break;
+            case 3: base = registres.getS(); break;
+            default: throw new IllegalStateException();
+        }
+
+        // INDEXÉ SIMPLE : ,R
+        if (mode == 0x04) {
+            return base;
+        }
+
+        // INDEXÉ 8 bits : n,R
+        if (mode == 0x0C) {
+            int offset = (byte) registres.fetchByte(); // signé
+            return (base + offset) & 0xFFFF;
+        }
+
+        throw new UnsupportedOperationException("Indexé non supporté");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -629,19 +1572,23 @@ public int calcularPostByte(String operando) {
 
 
     private int add8(int a, int b) {
+
         int result = a + b;
+
+        int cc = registres.getCC();
 
         // H (Half carry)
         updateHFlag(a, b);
 
         // C (Carry)
-        int cc = registres.getCC();
         if ((result & 0x100) != 0) cc |= FLAG_C;
         else cc &= ~FLAG_C;
 
-        // V (Overflow)
-        if (((a ^ result) & (b ^ result) & 0x80) != 0) cc |= FLAG_V;
-        else cc &= ~FLAG_V;
+        // V (Overflow SIGNÉ – CORRIGÉ)
+        if ((~(a ^ b) & (a ^ result) & 0x80) != 0)
+            cc |= FLAG_V;
+        else
+            cc &= ~FLAG_V;
 
         registres.setCC(cc);
 
@@ -650,8 +1597,6 @@ public int calcularPostByte(String operando) {
 
         return result & 0xFF;
     }
-
-
 
 
 
@@ -704,6 +1649,15 @@ public int calcularPostByte(String operando) {
         else cc &= ~0x01;
         registres.setCC(cc);
     }
+
+
+
+
+
+
+
+
+
 
 
 

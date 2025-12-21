@@ -18,9 +18,9 @@ public class Main {
 
             Instruction instruction = new Instruction(null, m);
 
-            RegistreCPU rcpu = new RegistreCPU();
 
-            rcpu = new RegistreCPU(m, instruction);
+
+             RegistreCPU rcpu = new RegistreCPU(m, instruction);
 
             instruction.setRegistreCPU(rcpu);
 
