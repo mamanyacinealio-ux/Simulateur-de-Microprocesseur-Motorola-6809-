@@ -22,11 +22,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private Instruction I;
     private FenetreROM ROM;
     private FenetreRAM RAM;
-    public FenetrePrincipale(RegistreCPU registrecpu,Memoire m,Instruction I ) {
+    private  FenetreEdition E;
+    public FenetrePrincipale(RegistreCPU registrecpu,Memoire m,Instruction I ,FenetreEdition F) {
         //FENETRE PRINCIPALE
         this.registrecpu=registrecpu;
         this.m = new Memoire(65536);
         this.I=I;
+        this.E=F;
         ;
 
         setTitle("MOTO6809");
@@ -449,11 +451,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         assembleur.setToolTipText("Assembler");
 
 
+
+
+
         ImageIcon iconimprimer = new ImageIcon(
                 new ImageIcon("C:/Image/imprimer.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
+
+
         JButton imprimer = new JButton(iconimprimer);
         imprimer.setToolTipText("Imprimer");
 

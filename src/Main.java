@@ -32,7 +32,7 @@ public class Main {
 
             FenetreCPU h = new FenetreCPU(rcpu);
 
-            FenetrePrincipale F = new FenetrePrincipale(rcpu,m,instruction);
+            FenetrePrincipale F = new FenetrePrincipale(rcpu,m,instruction,f);
 
 
             //f.setVisible(true);
