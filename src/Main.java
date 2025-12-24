@@ -28,15 +28,16 @@ public class Main {
 
             FenetreRAM RAM=new FenetreRAM(m);
             RAM.setVisible(true);
-            FenetreEdition f = new FenetreEdition(rcpu, m, instruction,ROM,RAM);
-
             FenetreCPU h = new FenetreCPU(rcpu);
+            FenetrePrincipale F = new FenetrePrincipale(rcpu,m,instruction);
 
-            FenetrePrincipale F = new FenetrePrincipale(rcpu,m,instruction,f);
 
 
             //f.setVisible(true);
             h.setVisible(true);
         });
+        System.out.println(FenetrePrincipale.class.getResource("/image/pas.png"));
+
     }
+
 }

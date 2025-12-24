@@ -22,14 +22,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private Instruction I;
     private FenetreROM ROM;
     private FenetreRAM RAM;
-    private  FenetreEdition E;
-    public FenetrePrincipale(RegistreCPU registrecpu,Memoire m,Instruction I ,FenetreEdition F) {
+    private FenetreEdition fenetreEditionCourante;
+
+
+    public FenetrePrincipale(RegistreCPU registrecpu,Memoire m,Instruction I) {
         //FENETRE PRINCIPALE
         this.registrecpu=registrecpu;
         this.m = new Memoire(65536);
         this.I=I;
-        this.E=F;
-        ;
+
+
+
 
         setTitle("MOTO6809");
         setBounds(0, 0, 1920, 140);
@@ -265,25 +268,27 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
 
         ImageIcon iconNouveau = new ImageIcon(
-                new ImageIcon("C:/Image/new2.png")
-                        .getImage()
-                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+                new ImageIcon(getClass().getResource("/image/new2.png"))
+                        .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
+
         JButton Nouveau1 = new JButton(iconNouveau);
         Nouveau1.setToolTipText("Nouveau fichier");
         Nouveau1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FenetreEdition fenetreEdition = new FenetreEdition(registrecpu,m,I,ROM,RAM);
-                fenetreEdition.setVisible(true);
+                fenetreEditionCourante =
+                        new FenetreEdition(registrecpu, m, I, ROM, RAM);
+                fenetreEditionCourante.setVisible(true);
+
             }
         });
 
         ImageIcon iconnew = new ImageIcon(
-                new ImageIcon("C:/Image/ouvrir2.png")
-                        .getImage()
-                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+                new ImageIcon(getClass().getResource("/image/ouvrir2.png"))
+                        .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
+
         JButton ouvrir1 = new JButton(iconnew);
         ouvrir1.setToolTipText("Ouvrir fichier");
         //ouvrir un fichier en mémoire
@@ -300,13 +305,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     String contenu = Files.readString(fichier.toPath());
 
                     // Ouvrir la fenêtre d’édition
-                    FenetreEdition fenetreEdition =
+                    fenetreEditionCourante =
                             new FenetreEdition(registrecpu, m, I, ROM, RAM);
+                    fenetreEditionCourante.setVisible(true);
+
 
                     // Mettre le texte dans la zone
-                    fenetreEdition.setCode(contenu);
+                    fenetreEditionCourante.setCode(contenu);
 
-                    fenetreEdition.setVisible(true);
+                    fenetreEditionCourante.setVisible(true);
 
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(
@@ -321,48 +328,48 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
 
         ImageIcon iconsauver = new ImageIcon(
-                new ImageIcon("C:/Image/sauver.png")
-                        .getImage()
-                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+                new ImageIcon(getClass().getResource("/image/sauver.png"))
+                        .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
+
         JButton sauver = new JButton(iconsauver);
         sauver.setToolTipText("Sauvergarder");
        //enregister un fichier en mémoire
         sauver.addActionListener(e -> {
 
-            FenetreEdition fenetreEdition =
-                    new FenetreEdition(registrecpu, m, I, ROM, RAM);
+            if (fenetreEditionCourante == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Aucun fichier ouvert",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             JFileChooser fileChooser = new JFileChooser();
-            int result = fileChooser.showSaveDialog(FenetrePrincipale.this);
+            int result = fileChooser.showSaveDialog(this);
 
             if (result == JFileChooser.APPROVE_OPTION) {
                 File fichier = fileChooser.getSelectedFile();
-
                 try {
-
-                    String texte = fenetreEdition.getCode();
-
-                    Files.writeString(fichier.toPath(), texte);
-
-
+                    Files.writeString(
+                            fichier.toPath(),
+                            fenetreEditionCourante.getCode()
+                    );
                 } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(
-                            FenetrePrincipale.this,
+                    JOptionPane.showMessageDialog(this,
                             "Erreur lors de l’enregistrement",
                             "Erreur",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
 
 
+
         ImageIcon iconediteur = new ImageIcon(
-                new ImageIcon("C:/Image/edition.png")
-                        .getImage()
-                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+                new ImageIcon(getClass().getResource("/image/edition.png"))
+                        .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
         JButton editeur = new JButton(iconediteur);
         editeur.setToolTipText("Édititer");
@@ -375,7 +382,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         });
 
         ImageIcon iconpas = new ImageIcon(
-                new ImageIcon("C:/Image/pas.png")
+                new ImageIcon("/image/pas.png")
                         .getImage()
                         .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
@@ -385,12 +392,20 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
 
         ImageIcon iconreset = new ImageIcon(
-                new ImageIcon("C:/Image/reset.png")
-                        .getImage()
-                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+                new ImageIcon(getClass().getResource("/image/reset.png"))
+                        .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
+
         JButton reset = new JButton(iconreset);
         reset.setToolTipText("Reset");
+        reset.addActionListener(e -> {
+            registrecpu.reset();
+            if (RAM != null) RAM.atualiseTableaux();
+            if (ROM != null) ROM.atualiseTableau();
+
+            System.out.println("RESET CPU effectué");
+        });
+
 
         ImageIcon iconirq = new ImageIcon(
                 new ImageIcon("C:/Image/irq.png")
@@ -442,13 +457,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         arranger.setToolTipText("Arranger");
 
 
-        ImageIcon iconassembleur = new ImageIcon(
-                new ImageIcon("C:/Image/assembleur.png")
-                        .getImage()
-                        .getScaledInstance(20, 20, Image.SCALE_SMOOTH)
+        ImageIcon iconassembler = new ImageIcon(
+                new ImageIcon(getClass().getResource("/image/assembleur.png"))
+                        .getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)
         );
-        JButton assembleur = new JButton(iconassembleur);
-        assembleur.setToolTipText("Assembler");
+
+        JButton assembler = new JButton(iconassembler);
+        assembler.setToolTipText("Assembler");
+        Assembler.addActionListener(e -> {
+
+            if (fenetreEditionCourante == null) {
+                JOptionPane.showMessageDialog(this,
+                        "Aucun programme ouvert",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            fenetreEditionCourante.assembleAndLoad();
+        });
+
+
+
+
 
 
 
@@ -496,16 +527,20 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         barre1.add(ouvrir1);
         barre1.add(sauver);
         barre1.add(editeur);
-        barre1.add(pas);
+       // barre1.add(pas);
         barre1.add(irq);
         barre1.add(firq);
         barre1.add(nmi);
-        barre1.add(arranger);
-        barre1.add(assembleur);
-        barre1.add(imprimer);
-        barre1.add(boutonDiminuer);
-        barre1.add(labelVitesse);
-        barre1.add(boutonAugmenter);
+        barre1.add(reset);
+       // barre1.add(arranger);
+        //barre1.add(assembleur);
+        //barre1.add(imprimer);
+
+
+
+
+
+
 
 
         setVisible(true);
