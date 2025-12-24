@@ -255,6 +255,10 @@ public class RegistreCPU {
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
+
         pcs.addPropertyChangeListener(listener);
     }
+
+
+
 }

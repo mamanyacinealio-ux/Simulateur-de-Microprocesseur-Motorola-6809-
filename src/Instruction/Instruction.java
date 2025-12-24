@@ -701,6 +701,56 @@ public int calcularPostByte(String operando) {
         }
         return post;
     }
+  //LES INTERUPTIONS
+    public void NMI() {
+
+        push16S(registres.getPC());
+        push16S(registres.getU());
+        push16S(registres.getY());
+        push16S(registres.getX());
+        push8S(registres.getDP());
+        push8S(registres.getB());
+        push8S(registres.getA());
+        push8S(registres.getCC());
+
+        int high = memoire.read(0xFFFC) & 0xFF;
+        int low  = memoire.read(0xFFFD) & 0xFF;
+        registres.setPC((high << 8) | low);
+    }
+
+    public void IRQ() {
+        if ((registres.getCC() & 0x10) != 0) return;
+        push16S(registres.getPC());
+        push16S(registres.getU());
+        push16S(registres.getY());
+        push16S(registres.getX());
+        push8S(registres.getDP());
+        push8S(registres.getB());
+        push8S(registres.getA());
+        push8S(registres.getCC());
+
+       registres.setCC(registres.getCC() | 0x10);
+
+        int high = memoire.read(0xFFF8) & 0xFF;
+        int low  = memoire.read(0xFFF9) & 0xFF;
+
+        registres.setPC((high << 8) | low);
+    }
+
+    public void FIRQ() {
+        if ((registres.getCC() & 0x40) != 0) return;
+
+        push16S(registres.getPC());
+        push8S(registres.getCC());
+
+        registres.setCC(registres.getCC() | 0x40);
+
+        int high = memoire.read(0xFFF6) & 0xFF;
+        int low  = memoire.read(0xFFF7) & 0xFF;
+
+        registres.setPC((high << 8) | low);
+    }
+
 
 
 

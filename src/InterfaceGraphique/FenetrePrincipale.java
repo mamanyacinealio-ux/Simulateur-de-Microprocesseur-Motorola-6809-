@@ -397,6 +397,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         );
         JButton irq = new JButton("IRQ");
         irq.setToolTipText("IRQ");
+        irq.addActionListener(e -> {
+            I.IRQ();
+            if (RAM != null) RAM.atualiseTableaux();
+            if (ROM != null) ROM.atualiseTableau();
+        });
 
         ImageIcon iconfirq = new ImageIcon(
                 new ImageIcon("C:/Image/firq.png")
@@ -405,6 +410,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         );
         JButton firq = new JButton("FIRQ");
         firq.setToolTipText("FIRQ");
+        firq.addActionListener(e -> {
+            I.FIRQ();
+            if (RAM != null) RAM.atualiseTableaux();
+            if (ROM != null) ROM.atualiseTableau();
+        });
+
 
 
         ImageIcon iconnmi = new ImageIcon(
@@ -414,6 +425,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         );
         JButton nmi = new JButton("NMI");
         nmi.setToolTipText("NMI");
+        nmi.addActionListener(e -> {
+            I.NMI();
+            if (RAM != null) RAM.atualiseTableaux();
+            if (ROM != null) ROM.atualiseTableau();
+        });
 
         ImageIcon iconarranger = new ImageIcon(
                 new ImageIcon("C:/Image/arranger.png")
