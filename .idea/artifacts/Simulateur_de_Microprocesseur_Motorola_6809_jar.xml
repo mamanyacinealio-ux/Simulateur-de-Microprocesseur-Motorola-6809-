@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Simulateur de Microprocesseur Motorola 6809:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Simulateur_de_Microprocesseur_Motorola_6809_jar</output-path>
+    <root id="archive" name="Simulateur de Microprocesseur Motorola 6809.jar">
+      <element id="module-output" name="Simulateur de Microprocesseur Motorola 6809" />
+    </root>
+  </artifact>
+</component>

@@ -5,12 +5,12 @@ import java.util.Set;
 import InterfaceGraphique.FenetreEdition ;
 import InterfaceGraphique.FenetrePrincipale;
 
-public class Syntaxe {
+//public class Syntaxe {
 
 
 
 
-    //LIste des instructions
+    /**LIste des instructions
     private static final Set<String> CODEI = new HashSet<>(Arrays.asList(
             "LDA", "LDB", "STA", "STB", "JMP", "ADD", "SUB", "BRA", "NOP","STA"
     ));
@@ -105,4 +105,4 @@ public class Syntaxe {
     }
     public Syntaxe(){};
 
-}
+}*/

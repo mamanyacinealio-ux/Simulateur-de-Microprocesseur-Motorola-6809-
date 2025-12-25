@@ -72,17 +72,13 @@ public class RegistreCPU {
         executionMap.put(0x9F, r -> instruction.STX_DIRECT());
         executionMap.put(0x109F, r -> instruction.STY_DIRECT());
 
-
         //STocage ETENDU
         executionMap.put(0xB7, r -> instruction.STA_ETENDU());
         executionMap.put(0xF7, r -> instruction.STB_ETENDU());
-
         executionMap.put(0x10FF, r -> instruction.STS_ETENDU());
         executionMap.put(0xFF, r -> instruction.STU_ETENDU());
         executionMap.put(0xBF, r -> instruction.STX_ETENDU());
         executionMap.put(0x10BF, r -> instruction.STY_ETENDU());
-
-
 
         //STocage INDEXE
         executionMap.put(0xA7, r -> instruction.STA_INDEXE());
@@ -92,57 +88,17 @@ public class RegistreCPU {
         executionMap.put(0xAF, r -> instruction.STX_INDEXE());
         executionMap.put(0x10AF, r -> instruction.STY_INDEXE());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //ADD IMMEDIAT
         executionMap.put(0x8B, r -> instruction.ADDA_IMMEDIAT());
         executionMap.put(0xCB, r -> instruction.ADDB_IMMEDIAT());
-
 
 //ADD DIRECT
         executionMap.put(0x9B, r -> instruction.ADDA_DIRECT());
         executionMap.put(0xDB, r -> instruction.ADDB_DIRECT());
 
-
-
-
-
-
-
 //ADD ETENDU
         executionMap.put(0xBB, r -> instruction.ADDA_ETENDU());
         executionMap.put(0xFB, r -> instruction.ADDB_ETENDU());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         //CMPA
         executionMap.put(0x81, r -> instruction.CMPA_IMMEDIATE());
@@ -152,7 +108,6 @@ public class RegistreCPU {
         executionMap.put(0x118C, r -> instruction.CMPS_IMMEDIATE());
         executionMap.put(0x1183, r -> instruction.CMPU_IMMEDIATE());
 
-
         //CMPA DIRECT
         executionMap.put(0x91, r -> instruction.CMPA_DIRECT());
         executionMap.put(0x9C, r -> instruction.CMPX_DIRECT());
@@ -161,9 +116,6 @@ public class RegistreCPU {
         executionMap.put(0x119C, r -> instruction.CMPS_DIRECT());
         executionMap.put(0x1193, r -> instruction.CMPU_DIRECT());
 
-
-
-
         //CMPA ETENDU
         executionMap.put(0xB1, r -> instruction.CMPA_ETENDU());
         executionMap.put(0xBC, r -> instruction.CMPX_ETENDU());
@@ -171,11 +123,6 @@ public class RegistreCPU {
         executionMap.put(0x10BC, r -> instruction.CMPY_ETENDU());
         executionMap.put(0x11BC, r -> instruction.CMPS_ETENDU());
         executionMap.put(0x11B3, r -> instruction.CMPU_ETENDU());
-
-
-
-
-
         //CMP INDEXE
         executionMap.put(0xA1, r -> instruction.CMPA_INDEXE());
         executionMap.put(0xAC, r -> instruction.CMPX_INDEXE());
@@ -184,14 +131,11 @@ public class RegistreCPU {
         executionMap.put(0x11AC, r -> instruction.CMPS_INDEXE());
         executionMap.put(0x11A3, r -> instruction.CMPU_INDEXE());
 
-
-
         //psh et pul
         executionMap.put(0x34, r -> instruction.PSHS());
         executionMap.put(0x35, r -> instruction.PULS());
         executionMap.put(0x36, r -> instruction.PSHU());
         executionMap.put(0x37, r -> instruction.PULU());
-
 
         //ajouter tous les autres opcodes ici
 
@@ -201,9 +145,6 @@ public class RegistreCPU {
         this(null, null);
     }
 
-    // ------------------------------------
-    // CYCLE D’EXÉCUTION
-    // ------------------------------------
 
     public int fetchByte() {
         if (memoire == null)
@@ -231,20 +172,16 @@ public class RegistreCPU {
         return fetchWOrd();
     }
 
-    /**
-     * Exécute un seul cycle d’instruction (Fetch, Decode, Execute).
-     */
-
 
     public void step() {
         if (executionMap.isEmpty() || memoire == null) {
-            throw new IllegalStateException("CPU non configurada.");
+            throw new IllegalStateException("CPU non configuré");
         }
 
         int initialPC = getPC();
-        int opcode = fetchByte(); // Lê o primeiro byte
+        int opcode = fetchByte();
 
-        // SEGREDO: Se for um prefixo ($10 ou $11), precisamos ler o próximo byte para formar o opcode real
+        //prefixe
         if (opcode == 0x10 || opcode == 0x11) {
             int prefix = opcode;
             int secondByte = fetchByte();
@@ -262,9 +199,6 @@ public class RegistreCPU {
 
 
 
-    // ------------------------------------
-    // GETTERS, SETTERS ET FIRE PROPERTY CHANGE
-    // ------------------------------------
 
     public int getPC() { return PC; }
     public void setPC(int pc) {
@@ -357,10 +291,9 @@ public class RegistreCPU {
         pcs.firePropertyChange("DP", old, DP);
     }
 
-    // [Ajouter tous les autres getters et setters avec firePropertyChange si nécessaire]
+    //AJouter autres getters et setters
 
     public void reset() {
-        // Met tous les registres à zéro lors de l’initialisation
         setPC(0);
         setA(0);
         setB(0);

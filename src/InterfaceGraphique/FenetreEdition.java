@@ -109,9 +109,9 @@ public class FenetreEdition extends JFrame {
 
     }
 
-    // =====================================================
-    // OUTILS
-    // =====================================================
+
+    //OUTILS
+
     public String getCode() {
         return zoneTexte.getText();
     }
@@ -127,9 +127,8 @@ public class FenetreEdition extends JFrame {
                 inst.equals("LDD") || inst.equals("CMPY");
     }
 
-    // =====================================================
-    // DECODE MODES (fusionné)
-    // =====================================================
+
+    //DECODE MODES (
     private String decode(String inst, String op) throws Exception {
 
         // PSH / PUL
@@ -168,9 +167,7 @@ public class FenetreEdition extends JFrame {
         return "FALSE";
     }
 
-    // =====================================================
-    // INDEXÉ SIMPLE
-    // =====================================================
+    //INDEXE
     private int postbyteIndexeSimple(String op) {
         char reg = op.charAt(op.length() - 1);
         int base;
@@ -184,9 +181,7 @@ public class FenetreEdition extends JFrame {
         return op.startsWith(",") ? base : base | 0x08;
     }
 
-    // =====================================================
-    // ASSEMBLAGE + CHARGEMENT (fusionné)
-    // =====================================================
+    //ASSEZMMBLAGE
     public void assembleAndLoad() {
 
         String[] lignes = zoneTexte.getText().toUpperCase().split("\\R");
@@ -286,7 +281,7 @@ public class FenetreEdition extends JFrame {
             if (ROM != null) ROM.atualiseTableau();
             if (RAM != null) RAM.atualiseTableaux();
 
-            JOptionPane.showMessageDialog(this, "Programme chargé ✔");
+            JOptionPane.showMessageDialog(this, "Programme chargé");
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this,

@@ -7,7 +7,7 @@ public class Memoire {
     public static final int ROM_START = 0xFC00;
 
     public Memoire(int taile) {
-        // INITIATION DE LA MEMOIRE
+        //INITIATION DE LA MEMOIRE
         this.memoire = new byte[taile];
     }
 
@@ -29,7 +29,7 @@ public class Memoire {
         if (address >= 0 && address < memoire.length) {
             memoire[address] = value;
         } else {
-            System.err.println("Aviso: Tentativa de escrita fora do limite de memória em $" + String.format("%04X", address));
+            System.err.println(" fora do limite de memória em $" + String.format("%04X", address));
         }
     }
 

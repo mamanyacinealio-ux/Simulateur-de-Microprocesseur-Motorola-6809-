@@ -133,7 +133,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             topFrame.dispose();
         });
 
-        // Ajouter les options au menu
+        //ajouter les options au menu
         menuFichiers.add(Nouveau);
         menuFichiers.add(Ouvrir);
         menuFichiers.add(Enregister);
@@ -143,7 +143,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         menuFichiers.add(Quitter);
         setJMenuBar(barre);
 
-        // Ajouter le menu à la barre
+        //ajouter le menu à la barre
         barre.add(menuFichiers);
 
 
@@ -185,17 +185,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         // Ajouter le menu à la barre
         barre.add(menuOutils);
 
-        // Placer la barre en haut de la fenêtre
+        //Placer la barre en haut de la fenêtre
         setJMenuBar(barre);
 
-        // Actions quand on clique sur les options
+        //Actions quand  cliquer
 
 
-        //MENU PRINCIPAL fenetre
+        //MENU PRINCIPAL
         JMenu menuFenetre = new JMenu(" Fenêtre");
 
 
-        // OPTIONS DU MENU fenetre
+        // OPTIONS DU MENU
         JMenuItem Programme = new JMenuItem("Programme");
         ramItem = new JMenuItem("RAM");
         romItem = new JMenuItem("ROM");
@@ -205,32 +205,32 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         ramItem.addActionListener(this);
         romItem.addActionListener(this);
 
-        // Ajouter les options au menu
+        //AJout les options au menu
         menuFenetre.add(Programme);
         menuFenetre.add(ramItem);
         menuFenetre.add(romItem);
         menuFenetre.add(PIA);
         menuFenetre.add(Arranger);
         setJMenuBar(barre);
-        // Ajouter le menu à la barre
+        //ajouter le menu à la barre
         barre.add(menuFenetre);
 
 
         //MENU PRINCIPAL options
         JMenu menuOptions = new JMenu("Options");
 
-        // OPTIONS DU MENU
+        //OPTIONS DU MENU
         JMenuItem Police = new JMenuItem("Police");
         JMenuItem Configuration = new JMenuItem("Configuration");
         JMenuItem Sauver = new JMenuItem("Sauver ");
 
-        // Ajouter les options au menu
+        //Ajouter les options au menu
         menuOptions.add(Police);
         menuOptions.add(Configuration);
         menuOptions.add(Sauver);
         setJMenuBar(barre);
 
-        // Ajouter le menu à la barre
+        //Ajouter le menu à la barre
         barre.add(menuOptions);
 
 
@@ -246,12 +246,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         JMenuItem Jeu_instructions = new JMenuItem("Jeu instructions");
 
 
-        // Ajouter les options au menu
+        //Ajouter les options au menu
         menuAide.add(A_propos);
         menuAide.add(Index);
         menuAide.add(Jeu_instructions);
 
-        // Ajouter le menu à la barre
+        //Ajouter le menu à la barre
         barre.add(menuAide);
 
 

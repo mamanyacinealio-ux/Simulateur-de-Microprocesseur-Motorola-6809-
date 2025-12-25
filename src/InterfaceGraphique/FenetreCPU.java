@@ -34,11 +34,11 @@ public class FenetreCPU extends JFrame {
         champPC = crearChamp(80, 10, 100, 30);
         add(champPC);
 
-        // A B
+        //A B
         champTexte2 = crearChamp(20, 50, 260, 30);
         add(champTexte2);
 
-        // S U
+        //S U
         crearLabel("S", 10, 100, 30);
         champS = crearChamp(35, 100, 90, 30);
         add(champS);
@@ -47,7 +47,7 @@ public class FenetreCPU extends JFrame {
         champU = crearChamp(175, 100, 90, 30);
         add(champU);
 
-        // --- Registradores A e B ---
+        //AB
         crearLabel("A", 10, 150, 30);
         champA = crearChamp(35, 150, 50, 30);
         add(champA);
@@ -68,7 +68,7 @@ public class FenetreCPU extends JFrame {
 
         setupFlagsUI();
 
-        // X e Y
+        //X e Y
         crearLabel("X", 10, 420, 30);
         champX = crearChamp(35, 420, 100, 30);
         add(champX);

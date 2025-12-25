@@ -17,15 +17,13 @@ public class Instruction {
     private RegistreCPU registres;
     private Memoire memoire;
 
-    // CARTES STATIQUES DE LA CLASSE LOGIQUE (POUR L’ASSEMBLEUR)
-    // FenetreEdition utilisera ces cartes pour assembler le code.
+    // HASHMAP
     public static Map<String, String> opcodeDetails = new HashMap<>();
 
     static {
 
         //pour arreter
         opcodeDetails.put("END", "00_1");
-        // Structure : "INSTRUCTION+MODE" -> "Opcode_Taille"
         opcodeDetails.put("LDAIMMEDIAT", "86_2");
         opcodeDetails.put("LDBIMMEDIAT", "C6_2");
         opcodeDetails.put("ABXINHERENT", "3A_1");
@@ -42,7 +40,6 @@ public class Instruction {
         opcodeDetails.put("LDDPIMMEDIAT","1F_2");
 
         //modes Direct LD
-
         opcodeDetails.put("LDADIRECT", "96_2");
         opcodeDetails.put("LDBDIRECT", "D6_2");
         opcodeDetails.put("LDSDIRECT", "10DE_3");
@@ -51,7 +48,6 @@ public class Instruction {
         opcodeDetails.put("LDYDIRECT","109E_3");
 
         //mode ETENDU DL
-
         opcodeDetails.put("LDAETENDU", "B6_3");
         opcodeDetails.put("LDBETENDU", "F6_3");
         opcodeDetails.put("LDSETENDU","10FE_3");
@@ -59,19 +55,13 @@ public class Instruction {
         opcodeDetails.put("LDXETENDU","BE_3");
         opcodeDetails.put("LDYETENDU","10BE_4");
 
-
-
-
         //LDOAD INDEXE
-
         opcodeDetails.put("LDAINDEXE","A6_2");
         opcodeDetails.put("LDBINDEXE","E6_2");
         opcodeDetails.put("LDSINDEXE","10EE_3");
         opcodeDetails.put("LDUINDEXE","EE_2");
         opcodeDetails.put("LDXINDEXE","AE_2");
         opcodeDetails.put("LDYINDEXE","10AE_3");
-
-
 
         //stocage Direct
         opcodeDetails.put("STADIRECT", "97_2");
@@ -163,27 +153,27 @@ public class Instruction {
 
 
 
-    //MÉTHODES D’EXÉCUTION (appelées par RegistreCPU.step())
 
-    // LDA - Immédiat (basé sur votre méthode lda de la Logique)
+
+    //LDA_Immédiat
     public void LDA_IMMEDIATE() {
         // Le PC a déjà avancé d’un octet dans RegistreCPU.step() (Opcode)
         int data = registres.fetchByte(); // Lit la donnée et avance le PC d’un octet
 
         registres.setA(data);
-        // Mettre à jour les drapeaux (CC) ici
+        //MISE à jour des drapeaux
 
         updateNZFlags(data);
         updateVFlag_Cleared();
 
     }
 
-    //LDB - Immédiat (basé sur votre méthode ldb de la Logique)
+    //LDB_Immédiat
     public void LDB_IMMEDIATE() {
         int data = registres.fetchByte(); // Lit la donnée et avance le PC
 
         registres.setB(data);
-        // Mettre à jour les drapeaux (CC) ici
+
 
         updateNZFlags(data);
         updateVFlag_Cleared();
@@ -214,21 +204,21 @@ public class Instruction {
     }
 
 
-    // ABX - Inhérent (basé sur votre méthode abx de la Logique)
+    //ABX_Inhérent
     public void ABX_INHERENT() {
         int B = registres.getB();
         int X = registres.getX();
 
-        // Simplement X = X + B
+
         int res = (X + B) & 0xFFFF;
 
         registres.setX(res);
-        // Mettre à jour les drapeaux (CC) ici
+
     }
 
     // NOP
     public void NOP() {
-        // Rien ne se passe. Le PC a déjà avancé.
+
     }
 
     public void LDA_DIRECT(){
@@ -406,7 +396,7 @@ public class Instruction {
         int low  = memoire.read(addr + 1) & 0xFF;
         int val = (high << 8) | low;
 
-        registres.setX(val);
+        registres.setY(val);
         updateNZFlags16(val);
     }
 
@@ -433,48 +423,39 @@ public class Instruction {
         updateNZFlags16(val);
     }
 
-
-
-
-
-
-
     //ADDA
     public void ADDA_IMMEDIAT() {
-        int data = registres.fetchByte(); // #$32
+        int data = registres.fetchByte();
         int a = registres.getA();
 
-        int res = a + data; // Calcul
-        registres.setA(res & 0xFF); // Stockage 8 bits
+        int res = a + data;
+        registres.setA(res & 0xFF);
 
         // Mise à jour des flags
-        updateNZFlags(res);           // N et Z
-        updateVFlag_ADD(a, data, res);// V
-        updateHFlag(a, data);         // H
-        updateCFlag(res);             // C
+        updateNZFlags(res);
+        updateVFlag_ADD(a, data, res);
+        updateHFlag(a, data);
+        updateCFlag(res);
     }
 
 
 
     public void ADDB_IMMEDIAT() {
-        int data = registres.fetchByte(); // #$32
+        int data = registres.fetchByte();
         int a = registres.getB();
 
-        int res = a + data; // Calcul
+        int res = a + data;
         registres.setA(res & 0xFF); // Stockage 8 bits
 
         // Mise à jour des flags
-        updateNZFlags(res);           // N et Z
-        updateVFlag_ADD(a, data, res);// V
-        updateHFlag(a, data);         // H
-        updateCFlag(res);             // C
+        updateNZFlags(res);
+        updateVFlag_ADD(a, data, res);
+        updateHFlag(a, data);
+        updateCFlag(res);
     }
 
 
     //ADD DIRECT
-
-
-
     public void ADDA_DIRECT() {
         int adr = registres.getEffectiveAdressDirect();
         int data = memoire.read(adr) & 0xFF;
@@ -490,8 +471,6 @@ public class Instruction {
 
 
 //ADD ETENDU
-
-
     public void ADDA_ETENDU() {
         int adr = registres.getEffectiveAdressEtendu();
         int data = memoire.read(adr) & 0xFF;
@@ -549,11 +528,6 @@ public class Instruction {
 
     }
 
-
-
-
-
-
     //STocage ETENDU
 
     public void STA_ETENDU() {
@@ -562,9 +536,6 @@ public class Instruction {
         memoire.write(addr, (byte) valeur);
     }
 
-
-
-
     //STocage ETENDU
 
     public void STB_ETENDU() {
@@ -572,8 +543,6 @@ public class Instruction {
         int valeur = registres.getA() & 0xFF;           // registre A = 8 bits
         memoire.write(addr, (byte) valeur);
     }
-
-
 
     public void STX_ETENDU() {
         int addr = registres.getEffectiveAdressEtendu();
@@ -676,11 +645,6 @@ public class Instruction {
         updateVFlag_Cleared(); // V = 0
     }
 
-
-
-
-
-
     public void STU_INDEXE() {
 
         int addr = getEffectiveAddressIndexe();
@@ -773,22 +737,6 @@ public void CMPA_IMMEDIATE() {
         updateCFlag_SUB(a, data);     // C
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void CMPX_IMMEDIATE() {
         int data = registres.fetchWOrd();
         int x = registres.getX();
@@ -799,8 +747,6 @@ public void CMPA_IMMEDIATE() {
         updateVFlag_SUB16(x, data, res);
         updateCFlag_SUB16(x, data);
     }
-
-
 
     public void CMPY_IMMEDIATE() {
         int data = registres.fetchWOrd();
@@ -824,8 +770,6 @@ public void CMPA_IMMEDIATE() {
         updateVFlag_SUB16(x, data, res);
         updateCFlag_SUB16(x, data);
     }
-
-
 
     public void CMPU_IMMEDIATE() {
         int data = registres.fetchWOrd();
@@ -921,7 +865,6 @@ public void CMPA_IMMEDIATE() {
         }
     }
 
-
     public void CMPS_DIRECT() {
         int addr = registres.getEffectiveAdressDirect();
         int high = memoire.read(addr) & 0xFF;
@@ -955,7 +898,7 @@ public void CMPA_IMMEDIATE() {
 
         updateNZFlags(result & 0xFFFF);
 
-        // Flag C
+
         if (regX >= memVal) {
             registres.setCC(registres.getCC() | 0x01);
         } else {
@@ -1204,8 +1147,8 @@ public void CMPA_IMMEDIATE() {
 
 
 
-    //MÉTODOS AUXILIARES DE FLAGS
-    /** Atualiza as flags N (Negativo) e Z (Zero). */
+
+    //FLAGS
     private void updateNZFlags(int value) {
         int cc = registres.getCC();
 
@@ -1218,26 +1161,26 @@ public void CMPA_IMMEDIATE() {
         registres.setCC(cc);
     }
 
-    /** Atualiza a flag C (Carry) - Bit 0. */
+
     private void updateCFlag(int result) {
         int cc = registres.getCC();
         if (result > 0xFF) { cc |= 0x01; } else { cc &= ~0x01; }
         registres.setCC(cc);
     }
 
-    /** Limpa a flag V (Overflow) - Usado em Load/Store. */
+
     private void updateVFlag_Cleared() {
         int cc = registres.getCC();
         cc &= ~0x02;
         registres.setCC(cc);
     }
 
-    /** Atualiza a flag V (Overflow) para a operação ADD - Bit 1. */
+
     private void updateVFlag_ADD(int op1, int op2, int result) {
         int cc = registres.getCC();
 
 
-        //Múltiplas
+
         if (((op1 ^ result) & (op2 ^ result) & 0x80) != 0) {
             cc |= 0x02; // Seta V
         } else {
@@ -1251,9 +1194,9 @@ public void CMPA_IMMEDIATE() {
 
         int cc = registres.getCC();
         if (((op1 & 0x0F) + (op2 & 0x0F)) > 0x0F) {
-            cc |= 0x20; // Seta H (Bit 5)
+            cc |= 0x20;
         } else {
-            cc &= ~0x20; // Limpa H
+            cc &= ~0x20;
         }
         registres.setCC(cc);
     }
@@ -1335,7 +1278,7 @@ public void CMPA_IMMEDIATE() {
 
 
 
-    /** Flag V pour SUB : Bit 1 */
+
     private void updateVFlag_SUB(int op1, int op2, int res) {
         int cc = registres.getCC();
         if (((op1 ^ op2) & (op1 ^ res) & 0x80) != 0) {
@@ -1346,7 +1289,7 @@ public void CMPA_IMMEDIATE() {
         registres.setCC(cc);
     }
 
-    /** Flag H pour SUB : Bit 5 */
+
     private void updateHFlag_SUB(int op1, int op2) {
         int cc = registres.getCC();
         if (((op1 & 0x0F) - (op2 & 0x0F)) < 0) {
@@ -1550,13 +1493,6 @@ public void CMPA_IMMEDIATE() {
     }
 
 
-
-
-
-
-
-
-
     //INDEXE
 
     private int getEffectiveAddressIndexe() {
@@ -1587,41 +1523,24 @@ public void CMPA_IMMEDIATE() {
         throw new UnsupportedOperationException("Indexé non supporté");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //calcule de post octet endexe
     public int calcularPostByte(String operando) {
-        // Remove parênteses de indireção se existirem [ ,X]
+
         String clean = operando.toUpperCase().replace("[", "").replace("]", "").trim();
 
-        // Divide em Offset e Registador (ex: "5,X" -> ["5", "X"])
+
         String[] partes = clean.split(",");
         String reg = (partes.length > 1) ? partes[1].trim() : partes[0].trim();
         String offsetStr = (partes.length > 1 && !partes[0].isEmpty()) ? partes[0].trim() : "0";
 
-        // 1. Identifica o Registador (Bits 5 e 6 do Post-byte)
+
         int regBits = 0;
         if (reg.contains("X")) regBits = 0x00;      // 00
         else if (reg.contains("Y")) regBits = 0x20; // 01
         else if (reg.contains("U")) regBits = 0x40; // 10
         else if (reg.contains("S")) regBits = 0x60; // 11
 
-        // 2. Calcula o Offset (simplificado para 5-bits: -16 a +15)
+
         int offset = 0;
         try {
             offset = Integer.parseInt(offsetStr.replace("$", ""), offsetStr.contains("$") ? 16 : 10);
@@ -1632,5 +1551,4 @@ public void CMPA_IMMEDIATE() {
     }
 
 
-    // [Ajouter toutes les autres méthodes d’instruction...]
-}
+ }

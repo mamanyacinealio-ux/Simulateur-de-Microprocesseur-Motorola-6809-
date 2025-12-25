@@ -98,7 +98,7 @@ public class FenetreROM extends JFrame{
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;
-            // La ROM  ne doit pas etre modifiable
+            //La ROM  ne doit pas etre modifiable
         }
     }
     public void atualiseTableau(){
